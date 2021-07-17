@@ -4,3 +4,6 @@
 [submodule "rchain-token"]
 	path = rchain-token
 	url = https://github.com/fabcotech/rchain-token
+[submodule "rfm"]
+	path = rfm
+	url = git@github.com:fabcotech/rfm.git
