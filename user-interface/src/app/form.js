@@ -1,13 +1,13 @@
 import { useState  } from "react";
 
-export const useForm = (callback: any, initialState = {}) => {
+export const useForm = (callback, initialState = {}) => {
     const [values, setValues] = useState(initialState);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
 
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         await callback();
     };
