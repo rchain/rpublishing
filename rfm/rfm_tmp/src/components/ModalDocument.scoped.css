@@ -1,0 +1,79 @@
+.modal-document {
+  width: 100vw;
+  --offset-top: 0px;
+  --offset-bottom: 0px;
+}
+
+.qrCodeContainer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 0.5em;
+}
+
+.signature-line {
+  display: flex;
+  background: var(--ion-color-success);
+  padding: 0.4em;
+  color: #242;
+  border-radius: 3px;
+  margin-left: 10px;
+  width: 340px;
+}
+.signature-ok,
+.signature-ko {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  padding: 5px;
+  color: #fff;
+  margin-right: 10px;
+}
+.signature-ok {
+  background: #4b5;
+}
+.signature-ko {
+  background: #b45;
+}
+
+.SignatureRequiredBtn {
+  margin-bottom: 2em;
+  height: 3em;
+  margin-left: 10px;
+  font-size: 1.1em;
+  width: 340px;
+  --border-radius: 0;
+  text-align: left;
+}
+
+.FloatingBottomLeft {
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  left: 0;
+}
+
+.ButtonArray {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  margin: 1em;
+}
+
+.TopLeftStrip {
+  position: fixed;
+  background: var(--ion-color-primary);
+  box-shadow: 0 4px 2px -2px gray;
+  border-bottom-left-radius: 0.25em;
+  border-bottom-right-radius: 0.25em;
+  z-index: 1;
+  margin-left: 1em;
+}
+
+.DownloadButton {
+  --box-shadow: none;
+}
