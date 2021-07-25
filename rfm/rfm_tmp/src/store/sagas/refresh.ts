@@ -8,9 +8,6 @@ import { inflate } from 'pako';
 
 import { push, RouterState } from 'connected-react-router';
 
-import 'capacitor-secure-storage-plugin';
-import { Plugins } from '@capacitor/core';
-
 import {
   FingerprintAIO
 } from "@ionic-native/fingerprint-aio/";
@@ -22,8 +19,6 @@ import { DID, DagJWS } from 'dids';
 import { decodeBase64 } from 'dids/lib/utils'
 import dagCBOR from 'ipld-dag-cbor'
 import { JWE } from 'did-jwt'
-
-const { SecureStoragePlugin } = Plugins;
 
 const {
   readBagsTerm,

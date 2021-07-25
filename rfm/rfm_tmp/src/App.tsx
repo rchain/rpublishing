@@ -21,15 +21,13 @@ import './App.scss';
 import './App.scoped.css';
 import { Bag, HistoryState } from './store';
 
-import { Plugins } from '@capacitor/core';
-
 import { ReactComponent as RChainLogo } from './assets/rchain.svg';
 
 import IdentityScreen from './components/identity/IdentityScreen';
 
 import { personCircle, closeCircleOutline, pin } from 'ionicons/icons';
 
-const { Device } = Plugins;
+import { Device } from "@capacitor/device";
 
 const LoginView = React.lazy(() => import('./views/LoginView'));
 const DockListView = React.lazy(() => import('./views/DocListView'));

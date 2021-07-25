@@ -1,13 +1,12 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "rfm",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "build",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  },
-  "cordova": {}
+	"appId": "io.ionic.starter",
+	"appName": "rfm",
+	"bundledWebRuntime": false,
+	"webDir": "build",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": false
+		}
+	},
+	"cordova": {}
 }

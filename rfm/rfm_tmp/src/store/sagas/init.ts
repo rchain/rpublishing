@@ -8,9 +8,6 @@ import { inflate } from 'pako';
 
 import { push, RouterState } from 'connected-react-router';
 
-import 'capacitor-secure-storage-plugin';
-import { Plugins } from '@capacitor/core';
-
 import {
   FingerprintAIO
 } from "@ionic-native/fingerprint-aio/";
@@ -23,7 +20,7 @@ import { decodeBase64 } from 'dids/lib/utils'
 import dagCBOR from 'ipld-dag-cbor'
 import { JWE } from 'did-jwt'
 
-const { SecureStoragePlugin } = Plugins;
+import SecureStoragePlugin from "capacitor-secure-storage-plugin";
 
 const {
   readBagsTerm,
@@ -87,7 +84,7 @@ const load = function* (action: { type: string; payload: any}) {
       privateKey: action.payload.privateKey
       } as AccountStorage)
      }
-    SecureStoragePlugin.set(record)
+    SecureStoragePlugin.SecureStoragePlugin.set(record)
   }
 
   const did = new DID({ resolver: { ...yield getRchainResolver(), ...KeyResolver.getResolver() } })

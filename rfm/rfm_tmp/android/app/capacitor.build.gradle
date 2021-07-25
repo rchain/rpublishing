@@ -9,7 +9,12 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':capacitor-file-selector')
+    implementation project(':capacitor-app')
+    implementation project(':capacitor-device')
+    implementation project(':capacitor-haptics')
+    implementation project(':capacitor-keyboard')
+    implementation project(':capacitor-status-bar')
+    implementation project(':capacitor-file-select')
     implementation project(':capacitor-secure-storage-plugin')
     implementation "com.android.support:support-v4:27.+"
 }

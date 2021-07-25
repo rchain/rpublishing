@@ -14,7 +14,6 @@ import {
   IonButton,
 } from '@ionic/react';
 import { document as documentIcon } from 'ionicons/icons';
-import { Plugins } from '@capacitor/core';
 import { useHistory, RouteComponentProps } from 'react-router';
 
 import {
@@ -29,7 +28,7 @@ import {
 
 import './ModalUploadDocument.scoped.css';
 
-const { FileSelector } = Plugins;
+import { FileSelect } from "capacitor-file-select";
 
 //Instead of deprecated withRouter
 export const withHistory = (Component: any) => {
@@ -84,23 +83,20 @@ class ModalUploadDocumentComponent extends React.Component<
 
   nativeFilePicker = async () => {
     const that = this;
-    let selectedFile = await FileSelector.fileSelector({
-      multiple_selection: false,
-      ext: ['.jpg', '.png', '.pdf', '.jpeg'],
+    let selectedFile = await FileSelect.select({
+      multiple: false,
+      extensions: ['.jpg', '.png', '.pdf', '.jpeg'],
     });
 
-    const paths = JSON.parse(selectedFile.paths);
-    const names = JSON.parse(selectedFile.original_names);
-    const filePath = paths[0];
-    const fileName = names[0];
+    const file0 = selectedFile.files[0];
 
-    const fileResponse = await fetch(filePath);
+    const fileResponse = await fetch(file0.path as any); //TODO: fix type inside the plugin
     const fileBlob = await fileResponse.blob();
 
     const asbase: string = (await this.blobToBase64(fileBlob)) as string;
 
     const document: Document = {
-      name: fileName,
+      name: file0.name,
       mimeType: fileBlob.type,
       data: Buffer.from(asbase.split(',')[1]).toString('base64'),
       signatures: {},

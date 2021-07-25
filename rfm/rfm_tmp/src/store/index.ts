@@ -11,9 +11,6 @@ import { createBrowserHistory, History } from 'history'
 import { CombinedState } from 'redux';
 import { RouterState } from 'connected-react-router';
 
-import 'capacitor-secure-storage-plugin';
-import { Plugins } from '@capacitor/core';
-
 import {
   FingerprintAIO,
   FingerprintOptions
@@ -22,7 +19,7 @@ import { rejects } from 'assert';
 
 import { DID, JWSSignature } from 'dids';
 
-const { SecureStoragePlugin } = Plugins;
+import SecureStoragePlugin from "capacitor-secure-storage-plugin";
 
 export interface State {
   did: undefined | DID;
@@ -231,7 +228,7 @@ export const getPrivateKey = createSelector(
         });
       }
       else {
-        const info = await SecureStoragePlugin.get({ key: publicKey })
+        const info = await SecureStoragePlugin.SecureStoragePlugin.get({ key: publicKey as string })
         const parsedInfo = JSON.parse(info.value) as AccountStorage;
         resolve(parsedInfo.privateKey);
       }
