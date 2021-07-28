@@ -20,7 +20,7 @@ import { decodeBase64 } from 'dids/lib/utils'
 import dagCBOR from 'ipld-dag-cbor'
 import { JWE } from 'did-jwt'
 
-import SecureStoragePlugin from "capacitor-secure-storage-plugin";
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 
 const {
   readBagsTerm,
@@ -84,7 +84,7 @@ const load = function* (action: { type: string; payload: any}) {
       privateKey: action.payload.privateKey
       } as AccountStorage)
      }
-    SecureStoragePlugin.SecureStoragePlugin.set(record)
+    SecureStoragePlugin.set(record)
   }
 
   const did = new DID({ resolver: { ...yield getRchainResolver(), ...KeyResolver.getResolver() } })

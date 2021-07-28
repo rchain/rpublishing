@@ -19,7 +19,7 @@ import { rejects } from 'assert';
 
 import { DID, JWSSignature } from 'dids';
 
-import SecureStoragePlugin from "capacitor-secure-storage-plugin";
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 
 export interface State {
   did: undefined | DID;
@@ -72,8 +72,8 @@ export interface Document {
 
 const initialState: State = {
   did: undefined,
-  readOnlyUrl: 'http://127.0.0.1:40403',
-  validatorUrl: 'http://127.0.0.1:40403',
+  readOnlyUrl: 'http://localhost:40403',
+  validatorUrl: 'http://localhost:40403',
   nonce: undefined,
   contractPublicKey: undefined,
   identities: {},
@@ -228,7 +228,7 @@ export const getPrivateKey = createSelector(
         });
       }
       else {
-        const info = await SecureStoragePlugin.SecureStoragePlugin.get({ key: publicKey as string })
+        const info = await SecureStoragePlugin.get({ key: publicKey as string })
         const parsedInfo = JSON.parse(info.value) as AccountStorage;
         resolve(parsedInfo.privateKey);
       }
@@ -300,7 +300,7 @@ export const getDocumentsAwaitingSignature = createSelector(
         documentsAwaitingSignature[bagId] = document;
         return;
       }
-
+      /*
       if (
         document.signatures['0'] &&
         document.signatures['1'] &&
@@ -310,6 +310,7 @@ export const getDocumentsAwaitingSignature = createSelector(
         documentsAwaitingSignature[bagId] = document;
         return;
       }
+      */
     });
 
     return documentsAwaitingSignature;
