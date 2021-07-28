@@ -55,7 +55,7 @@
     "pako": "^2.0.2",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "qrcode": "^1.4.4",
-    "rchain-did-resolver": "https://github.com/TheoXD/rchain-did-resolver.git",
+    "rchain-did-resolver": "file:.yalc/rchain-did-resolver",
     "rchain-token-files": "fabcotech/rchain-token#aaf8df2b9715608f307647989f5f8f3e24565bae",
     "rchain-toolkit": "^0.2.8",
     "react": "^17.0.2",
