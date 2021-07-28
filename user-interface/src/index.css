@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
 body {
   text-align: center;
   align-items: center;
-  font-family: "Josefin Sans", Helvetica, Arial, sans-serif;
+  font-family: 'Raleway', sans-serif;
  
 }
 
@@ -60,8 +62,20 @@ ul {
   color: #fff;
 }
 
-.publish-page { 
-  padding: 20px 20px 20px 20px;
+.modal-dialog {
+  animation-name: animateModal;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  -webkit-animation-fill-mode: forwards;
+}
+
+@keyframes animateModal {
+  from {top: -120px;}
+  to {top: 0px;}
+}
+
+.modal-header, .modal-footer {
+  border: none;
 }
 
 a {

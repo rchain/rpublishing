@@ -1,0 +1,274 @@
+.practice {
+    background: #fff;
+    margin: auto;
+    font-style: normal;
+    border-radius: 15px;
+  }
+  
+  .prac-main-container {
+    width: 100%;
+    font-style: normal;
+    font-weight: 500;
+    overflow: auto;
+    border-radius: 15px;
+    padding: 30px;
+  }
+  
+  .upload-row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .upload-column {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 150px 0px 20px;
+    margin-bottom: 30px;
+  }
+  
+  .header-title {
+    color: #9F5233;
+    font-size: 34px;
+    margin-bottom: 40px;
+    margin-left: 15px;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 0px;
+    font: Inter;
+    font-style: normal;
+  }
+  
+  .upload-description {
+    color: #121212;
+  }
+  
+  .upload-form-title {
+    font-size: 24px;
+    font-family: Inter;
+    line-height: 24px;
+    color: #9F5233;
+    margin-left: -30px;
+    margin-bottom: 10px;
+  }
+  
+  .upload-form-container {
+    color: #dde2ff;
+    text-align: left;
+    width: 90%;
+    margin: auto;
+  }
+  
+  label {
+    font-weight: bold;
+    color: #9F5233;
+    font-size: 1.1rem;
+  }
+  
+  .file-upload::-webkit-file-upload-button {
+    color: #121212;
+    display: inline-block;
+    background: #fff;
+    border: none;
+    padding: 7px 15px;
+    font-weight: 700;
+    border-radius: 3px;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 10pt;
+  }
+  
+  .uploadform-inputs {
+    font-size: 14px;
+    border: 1px solid #CCCCC4;
+    margin-bottom: 10px;
+    width: 500px;
+    height: 40px;
+    color: #121212;
+    padding: 10px 8px;
+    background: #fff;
+    border-radius: 2px;
+  }
+  
+  .uploadform-inputs:focus {
+    color: #121212;
+    outline: 0;
+    border: 1px solid #9F5233;
+  }
+  
+  .uploadform-inputs::placeholder {
+    color: #121212;
+    font: Avenir Next LT Pro;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+
+  option {
+    margin-right: 20px;
+  }
+  
+  #selectMovie-rating {
+    opacity: 0.5;
+    width: 80%;
+    border: none;
+    height: 20px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #82869a;
+    margin-bottom: 10px;
+    font: Avenir Next LT Pro;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+  }
+  
+  #uploadform-label {
+    display: block;
+    padding: 3px;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+  
+  .movie-container {
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    justify-content: center;
+    align-content: center;
+  }
+  
+  .customUpload {
+    color: white;
+    border: none;
+    display: inline-block;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 14px;
+    width: 350px;
+    height: 40px;
+    background: #9F5233;
+    border-radius: 8px;
+    margin-bottom: 70px;
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .Uploadbtn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: auto;
+    background: #fff;
+    font-style: normal;
+    border-radius: 15px;
+  }
+  
+  .uploadbtn {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    background: #9F5233;
+    border-radius: 8px;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 1px 2px 0px #000000 15%;
+    text-align: center;
+    border: 0;
+    outline: 0;
+    width: 350px;
+    height: 50px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 120px;
+  }
+
+  .customUpload:hover, .uploadbtn:hover {
+    color: #121212;
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .Upload-container {
+      display: grid;
+      grid-template-columns: 100%;
+      width: 80%;
+      margin: auto;
+      background: #fff;
+      font-family: SF Pro Display;
+      font-style: normal;
+      font-weight: 500;
+    }
+    .Upload {
+      background: #fff;
+      width: 80%;
+      margin: auto;
+      font-style: normal;
+      border-radius: 15px;
+    }
+    .uploadbtn {
+      padding: 8px 120px;
+    }
+  
+    .custom-upload,
+    .custom-upload2 {
+      padding: 5px 20px;
+      margin-bottom: 10px;
+      margin-top: 30px;
+    }
+    .custom-upload2 {
+      margin-top: 60px;
+    }
+  
+    @media only screen and (max-width: 400px) {
+      .Upload-container {
+        display: grid;
+        grid-template-columns: 100%;
+        width: 80%;
+        margin: auto;
+        background: #fff;
+        font-family: SF Pro Display;
+        font-style: normal;
+        font-weight: 500;
+      }
+      .uploadbtn {
+        padding: 8px 10px;
+      }
+  
+      .movie-container {
+        width: 80%;
+        padding-left: 10px;
+      }
+  
+      .custom-upload,
+      .custom-upload2 {
+        padding: 5px 0px;
+        margin-bottom: 5px;
+        margin-top: 10px;
+      }
+  
+      .custom-upload2 {
+        margin-top: 20px;
+      }
+  
+      .uploadform-inputs::placeholder {
+        font-size: 6px;
+        font-weight: 200;
+        line-height: 10px;
+      }
+  
+      .uploadform-inputs {
+        margin-bottom: 10px;
+        width: 80%;
+        color: #82869a;
+        padding: 5px 3px;
+      }
+    }
+  }
+  
