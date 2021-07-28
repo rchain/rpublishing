@@ -98,7 +98,6 @@ const ModalDocumentComponent: React.FC<ModalDocumentProps> = (
   if (document && document.signatures) {
     if (document.signatures['0']) lastSignature = '0';
     if (document.signatures['1']) lastSignature = '1';
-    if (document.signatures['2']) lastSignature = '2';
   }
 
   return (
@@ -162,16 +161,6 @@ const ModalDocumentComponent: React.FC<ModalDocumentProps> = (
           <div className="ps5">
             <div className="document">
               <div className="left">
-                {['image/png', 'image/jpg', 'image/jpeg'].includes(
-                  document.mimeType
-                ) ? (
-                    <img
-                      alt={document.name}
-                      src={`data:${document.mimeType};base64, ${document.data}`}
-                    />
-                  ) : (
-                    <React.Fragment />
-                  )}
                 {['application/pdf'].includes(
                   document.mimeType
                 ) ? (
@@ -212,6 +201,16 @@ const ModalDocumentComponent: React.FC<ModalDocumentProps> = (
 
         {document && (
           <div className="FloatingBottomLeft">
+            {['image/png', 'image/jpg', 'image/jpeg'].includes(
+                  document.mimeType
+                ) ? (
+                    <img
+                      alt={document.name}
+                      src={`data:${document.mimeType};base64, ${document.data}`}
+                    />
+                  ) : (
+                    <React.Fragment />
+                  )}
             {Object.keys(document.signatures).map(s => {
               return (
                 <p className="signature-line" key={s}>
@@ -233,7 +232,7 @@ const ModalDocumentComponent: React.FC<ModalDocumentProps> = (
                 </p>
               );
             })}
-            {[undefined, '0', '1'].includes(lastSignature) && (
+            {[undefined, '0'].includes(lastSignature) && (
               <IonButton
                 className="SignatureRequiredBtn"
                 size="default"
@@ -241,7 +240,7 @@ const ModalDocumentComponent: React.FC<ModalDocumentProps> = (
                   props.reupload(props.registryUri, props.bagId);
                 }}
               >
-                Your signature required
+                Attest and Sign
               </IonButton>
             )}
           </div>

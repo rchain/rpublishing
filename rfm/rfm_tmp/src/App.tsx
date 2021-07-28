@@ -139,7 +139,7 @@ const AppComponent: React.FC<AppProps> = props => {
     <IonPage id="home-page">
       <IonHeader no-border className="ion-no-border RoundedHeader">
         <IonToolbar className="noSafeAreaPaddingTop">
-          <IonTitle className="main-title">RChain File Manager</IonTitle>
+          <IonTitle className="main-title">RChain Publishing</IonTitle>
           <IonButton
             slot="end"
             icon-only

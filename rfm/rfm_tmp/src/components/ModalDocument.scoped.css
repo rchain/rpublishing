@@ -2,6 +2,7 @@
   width: 100vw;
   --offset-top: 0px;
   --offset-bottom: 0px;
+  --background: black;
 }
 
 .qrCodeContainer {
@@ -67,7 +68,7 @@
 .TopLeftStrip {
   position: fixed;
   background: var(--ion-color-primary);
-  box-shadow: 0 4px 2px -2px gray;
+  box-shadow: 0px 1px 5px 1px rgb(0 0 0 / 41%);
   border-bottom-left-radius: 0.25em;
   border-bottom-right-radius: 0.25em;
   z-index: 1;

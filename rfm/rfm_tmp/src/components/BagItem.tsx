@@ -67,7 +67,7 @@ const BagItemComponent: React.FC<BagItemProps> = ({
         </IonLabel>
         {awaitsSignature && (
           <IonButton color="secondary" size="small">
-            Needs signature
+            Needs attestation
           </IonButton>
         )}
       </IonItem>

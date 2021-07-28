@@ -49,7 +49,6 @@ const uploadBagData = function*(action: {
     scheme: {
       '0': repipient,
       '1': 'did:rchain:' + state.reducer.registryUri,
-      '2': repipient,
     },
   } as Document;
 
