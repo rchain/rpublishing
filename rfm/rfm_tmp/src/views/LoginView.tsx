@@ -36,108 +36,69 @@ interface LoginViewProps {
 const LoginViewComponent: React.FC<LoginViewProps> = props => {
   const history = useHistory();
   const [privateKey, setPrivateKey] = useState<string>('');
-  const [registryUri, setRegstryUri] = useState<string>('');
-
-  const [devLogin, setDevLogin] = useState(false);
-
-  const [maxSlide, setMaxSlide] = useState<string>('');
-
-  const slideOpts: Record<string, unknown> = {
-    initialSlide: 0,
-    speed: 400,
-  };
-
-  const CreateIdentityScreen = React.lazy(() =>
-    import('../components/identity/CreateIdentityScreen')
-  );
-  const RestoreIdentityScreen = React.lazy(() =>
-    import('../components/identity/RestoreIdentityScreen')
-  );
+  const [registryUri, setRegistryUri] = useState<string>('');
 
   return (
     <IonContent>
-      <IonSlides
-        class="Instructions"
-        options={slideOpts}
-        pager={true}
-        onIonSlideDidChange={(event: any) => console.info(event)}
-      >
+      <IonSlides>
         <IonSlide>
-          {devLogin ? (
-            <React.Fragment>
-              <div className="login">
-                <IonItem>
-                  <IonLabel position="floating">Address</IonLabel>
-                  <IonInput
-                    placeholder="address"
-                    type="text"
-                    value={registryUri}
-                    onIonChange={e =>
-                      setRegstryUri((e.target as HTMLInputElement).value)
-                    }
-                  />
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="floating">Private key</IonLabel>
-                  <IonInput
-                    placeholder="Private key"
-                    type="password"
-                    value={privateKey}
-                    onIonChange={e =>
-                      setPrivateKey((e.target as HTMLInputElement).value)
-                    }
-                  />
-                </IonItem>
+          <React.Fragment>
+            <div className="login">
+              <h2>What would you like to do?</h2>
+
+              <div className="container">
+                {/* Publisher */}
                 <div className="LoadButtonDiv">
                   <IonButton
-                    disabled={!privateKey || !registryUri}
                     onClick={async () => {
                       props.init({
-                        registryUri: registryUri,
-                        privateKey: privateKey,
+                        registryUri:
+                          'gusp3piz6fbsdqyogbwg7kcqta3c49sxtc9fug96spsw51gsnag5br',
+                        privateKey:
+                          '6428f75c09db8b3a260fc1dcb1c93619bd3eecf6787b003ddc6ba5e87025c177',
                         platform: props.platform,
                       });
                     }}
                   >
-                    Load
+                    Publish
+                  </IonButton>
+                </div>
+                {/* Attestor */}
+                <div className="LoadButtonDiv">
+                  <IonButton
+                    onClick={async () => {
+                      props.init({
+                        registryUri:
+                          '3ef5rdmo78rzufwkcagb6t6jcd9646sna7rqn71c351mms954w7t17',
+                        privateKey:
+                          '963a3d9828f03ba67fcfd7d13be7d905416a2864ef0d7527c4646d18be29d476',
+                        platform: props.platform,
+                      });
+                    }}
+                  >
+                    Attest
+                  </IonButton>
+                </div>
+                {/* Buyer */}
+                <div className="LoadButtonDiv">
+                  <IonButton
+                    onClick={async () => {
+                      props.init({
+                        registryUri:
+                          'y5y1ix3gefdjmrpg6qmeb678sxodhf865emciftaybw14bh6qam539',
+                        privateKey:
+                          '6dfd785d7dea6e4adcec0879b8ee4260c6ab8b9250e36b0bc4170b1ee6ddc566',
+                        platform: props.platform,
+                      });
+                    }}
+                  >
+                    Buy
                   </IonButton>
                 </div>
               </div>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <NoIdentityScreen />
-            </React.Fragment>
-          )}
-          <div className="BottomBar">
-            <IonItem>
-              <IonLabel>Dev Login: </IonLabel>
-              <IonToggle
-                color="secondary"
-                checked={devLogin}
-                onIonChange={e => setDevLogin(e.detail.checked)}
-              />
-            </IonItem>
-          </div>
+            </div>
+          </React.Fragment>
         </IonSlide>
-        {props.action === 'new' ? (
-          <Suspense fallback={<IonLoading isOpen={true} />}>
-            <IonSlide>
-              <CreateIdentityScreen />
-            </IonSlide>
-          </Suspense>
-        ) : (
-          undefined
-        )}
-        {props.action === 'restore' ? (
-          <Suspense fallback={<IonLoading isOpen={true} />}>
-            <IonSlide>
-              <RestoreIdentityScreen />
-            </IonSlide>
-          </Suspense>
-        ) : (
-          undefined
-        )}
       </IonSlides>
     </IonContent>
   );
