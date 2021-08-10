@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as rchainToolkit from 'rchain-toolkit';
 import React, { Suspense, useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
   IonContent,
   IonItem,
@@ -19,10 +20,8 @@ import {
 } from '@ionic/react';
 import './LoginView.scoped.css';
 import { HistoryState, getPlatform } from '../store';
-
-import NoIdentityScreen from '../components/identity/NoIdentityScreen';
-//import CreateIdentityScreen from "../components/identity/CreateIdentityScreen";
-import { ReactComponent as RChainLogo } from '../assets/rchain.svg';
+import { Users } from '../users/users';
+import PublicStore from './publicStoreView';
 
 interface LoginViewProps {
   platform: string;
@@ -31,12 +30,44 @@ interface LoginViewProps {
     registryUri: string;
     privateKey: string;
     platform: string;
+    user: string;
   }) => void;
 }
 const LoginViewComponent: React.FC<LoginViewProps> = props => {
-  const history = useHistory();
-  const [privateKey, setPrivateKey] = useState<string>('');
-  const [registryUri, setRegistryUri] = useState<string>('');
+
+  const handlePublisherLogin = async() => {
+    localStorage.removeItem('user');
+  
+    props.init({
+      registryUri: Users.publisher.REGISTRY_URI,
+      privateKey:
+        Users.publisher.PRIVATE_KEY,
+      platform: props.platform,
+      user: 'publisher'
+    });
+  }
+
+  const handleAttestorLogin = async () => {
+    localStorage.removeItem('user');
+
+    props.init({
+      registryUri: Users.attestor.REGISTRY_URI,
+      privateKey: Users.attestor.PRIVATE_KEY,
+      platform: props.platform,
+      user: 'attestor',
+    });
+  };
+
+  const handleBuyerLogin = async () => {
+    localStorage.setItem('user', 'buyer');
+
+    props.init({
+      registryUri: Users.buyer.REGISTRY_URI,
+      privateKey: Users.buyer.PRIVATE_KEY,
+      platform: props.platform,
+      user: 'buyer'
+    });
+  }
 
   return (
     <IonContent>
@@ -51,13 +82,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 <div className="LoadButtonDiv">
                   <IonButton
                     onClick={async () => {
-                      props.init({
-                        registryUri:
-                          'gusp3piz6fbsdqyogbwg7kcqta3c49sxtc9fug96spsw51gsnag5br',
-                        privateKey:
-                          '6428f75c09db8b3a260fc1dcb1c93619bd3eecf6787b003ddc6ba5e87025c177',
-                        platform: props.platform,
-                      });
+                      handlePublisherLogin();
                     }}
                   >
                     Publish
@@ -67,13 +92,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 <div className="LoadButtonDiv">
                   <IonButton
                     onClick={async () => {
-                      props.init({
-                        registryUri:
-                          '3ef5rdmo78rzufwkcagb6t6jcd9646sna7rqn71c351mms954w7t17',
-                        privateKey:
-                          '963a3d9828f03ba67fcfd7d13be7d905416a2864ef0d7527c4646d18be29d476',
-                        platform: props.platform,
-                      });
+                      handleAttestorLogin();
                     }}
                   >
                     Attest
@@ -83,13 +102,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 <div className="LoadButtonDiv">
                   <IonButton
                     onClick={async () => {
-                      props.init({
-                        registryUri:
-                          'y5y1ix3gefdjmrpg6qmeb678sxodhf865emciftaybw14bh6qam539',
-                        privateKey:
-                          '6dfd785d7dea6e4adcec0879b8ee4260c6ab8b9250e36b0bc4170b1ee6ddc566',
-                        platform: props.platform,
-                      });
+                      handleBuyerLogin();
                     }}
                   >
                     Buy
@@ -115,6 +128,7 @@ export const LoginView = connect(
         registryUri: string;
         privateKey: string;
         platform: string;
+        user: string
       }) => {
         dispatch({
           type: 'INIT',
@@ -126,11 +140,13 @@ export const LoginView = connect(
               a.privateKey as string
             ),
             registryUri: a.registryUri,
+            user: a.user
           },
         });
       },
     };
-  }
+  },
+  
 )(LoginViewComponent);
 
 export default LoginView;

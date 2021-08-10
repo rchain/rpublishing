@@ -7,7 +7,7 @@ ion-slides {
   height: 100%;
 }
 
-ion-button.ActionButton {
+.btn {
   border: solid 1px var(--ion-color-secondary);
   border-radius: 1em;
   --box-shadow: none;
@@ -35,7 +35,16 @@ div.BottomBar {
   opacity: 0.1;
 }
 
+.login h2 {
+  font-family: 'Poppins', sans-serif;
+  color: #121212;
+}
+
 .LoadButtonDiv {
   text-align: left;
   padding: 10px 10px 10px 10px;
+}
+
+.LoadButtonDiv ion-button {
+  font-family: 'Poppins', sans-serif;
 }
