@@ -1,0 +1,9 @@
+{
+    "apps":
+    [
+        {
+            "appId": "rpublishing",
+            "root": "rfm/rfm_tmp"
+        }
+    ]
+}
