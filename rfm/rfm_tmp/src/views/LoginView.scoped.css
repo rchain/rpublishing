@@ -7,6 +7,12 @@ ion-slides {
   height: 100%;
 }
 
+.login {
+  background-color: #CCCCC4;
+  padding: 20px 20px 20px 20px;
+  border-radius: 5px;
+}
+
 .btn {
   border: solid 1px var(--ion-color-secondary);
   border-radius: 1em;

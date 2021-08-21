@@ -21,7 +21,6 @@ import {
 import './LoginView.scoped.css';
 import { HistoryState, getPlatform } from '../store';
 import { Users } from '../users/users';
-import PublicStore from './publicStoreView';
 
 interface LoginViewProps {
   platform: string;
@@ -80,7 +79,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
               <div className="container">
                 {/* Publisher */}
                 <div className="LoadButtonDiv">
-                  <IonButton
+                  <IonButton 
                     onClick={async () => {
                       handlePublisherLogin();
                     }}

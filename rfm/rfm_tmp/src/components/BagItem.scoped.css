@@ -1,5 +1,6 @@
-ion-item-sliding {
+ion-item-sliding.container {
   overflow: visible;
+  background: var(--ion-color-primary);
 }
 ion-item {
   --padding-start: 0;
@@ -66,7 +67,21 @@ ion-item ion-note.md {
   margin: 1em;
 }
 
+.ion-text-wrap {
+  color: var(--ion-color-primary);
+}
+
 ion-footer ion-title {
   font-size: 11px;
   font-weight: normal;
+}
+
+ion-button.AddButton {
+  border-radius: 5px;
+  border-color: var(--ion-color-primary);
+  --box-shadow: none;
+  color: var(--ion-background-color);
+  margin: auto;
+  margin-right: 5px;
+  background: var(--ion-color-primary);
 }

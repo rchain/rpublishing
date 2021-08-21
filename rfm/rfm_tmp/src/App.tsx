@@ -32,7 +32,7 @@ import { Device } from "@capacitor/device";
 
 const LoginView = React.lazy(() => import('./views/LoginView'));
 const DockListView = React.lazy(() => import('./views/DocListView'));
-const PublicStore = React.lazy(() => import('./views/publicStoreView'));
+const PublicStore = React.lazy(() => import('./views/PublicStoreView'));
 
 interface AppProps {
   authorised: boolean;
@@ -200,19 +200,12 @@ const AppComponent: React.FC<AppProps> = props => {
 
         {
           (identity) ? (
-            <IonRouterOutlet>
-              <Route
-                path="/marketplace"
-                render={rprops => (
                   <Suspense fallback={<IonSpinner/>}>
                     <PublicStore
                       registryUri='xyz'
                       connected='true'
                     />
                   </Suspense>
-                )}
-                />
-            </IonRouterOutlet>
           )
             :
             (

@@ -183,20 +183,27 @@ class ModalUploadDocumentComponent extends React.Component<
           </IonButton>
         </IonButtons>
 
-        <IonContent class="inner">
+        <IonContent className="inner">
           <IonItem>
-            <IonLabel position="floating">Document ID</IonLabel>
+            <IonLabel className="label" position="floating">
+              Enter name of document
+            </IonLabel>
             <IonInput
+              className="label"
               placeholder="document ID"
               type="text"
               value={this.state.bagId}
               onIonChange={e =>
-                this.setState({ bagId: (e.target as HTMLInputElement).value })
+                this.setState({
+                  bagId: (e.target as HTMLInputElement).value,
+                })
               }
             />
           </IonItem>
           {this.props.platform === 'web' ? (
-            <div className={`drop-area ${!!this.state.document ? 'hide' : ''}`}>
+            <div
+              className={`drop-area ${!!this.state.document ? 'hide' : ''}`}
+            >
               <textarea ref={this.saveRef} />
               <span>
                 <IonIcon icon={documentIcon} size="large" /> Drop your file
@@ -219,8 +226,11 @@ class ModalUploadDocumentComponent extends React.Component<
           )}
 
           <IonItem>
-            <IonLabel position="floating">Request signature from</IonLabel>
+            <IonLabel className="label" position="floating">
+              Request signature from
+            </IonLabel>
             <IonInput
+              className="label"
               placeholder="did:rchain:<registryUri>"
               type="text"
               value={this.state.recipient}
@@ -247,9 +257,8 @@ class ModalUploadDocumentComponent extends React.Component<
           )}
           {this.state.document ? (
             <IonItem>
-              <IonButton
+              <IonButton className="AddButton"
                 disabled={!this.state.document || !this.state.bagId}
-                size="default"
                 onClick={() => {
                   this.props.upload(
                     this.state.bagId,
@@ -260,9 +269,7 @@ class ModalUploadDocumentComponent extends React.Component<
               >
                 Upload
               </IonButton>
-              <IonButton
-                color="light"
-                size="default"
+              <IonButton className="AddButton"
                 onClick={() => {
                   this.setState({ document: undefined });
                 }}
