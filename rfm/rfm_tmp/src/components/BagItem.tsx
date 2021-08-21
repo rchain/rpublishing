@@ -36,7 +36,7 @@ const BagItemComponent: React.FC<BagItemProps> = ({
 }) => {
   const history = useHistory();
   return (
-    <IonItemSliding>
+    <IonItemSliding className="container">
       <IonItemOptions side="end">
         <IonItemOption
           color="secondary"
@@ -60,13 +60,13 @@ const BagItemComponent: React.FC<BagItemProps> = ({
         }}
       >
         <div className="IconContainer">
-          <IonIcon icon={documentIcon} color={completed ? 'success' : 'secondary'} size="large" />
+          <IonIcon icon={documentIcon} color={completed ? 'success' : 'primary'} size="large" />
         </div>
         <IonLabel className="ion-text-wrap">
           <h2>{bagIdFromAddress(id)}</h2>
         </IonLabel>
         {awaitsSignature && (
-          <IonButton color="secondary" size="small">
+          <IonButton className="AddButton">
             Needs attestation
           </IonButton>
         )}
