@@ -200,10 +200,10 @@ const AppComponent: React.FC<AppProps> = props => {
 
         {
           (identity) ? (
-                  <Suspense fallback={<IonSpinner/>}>
+                  <Suspense fallback={<IonLoading isOpen={true} />}>
                     <PublicStore
-                      registryUri='xyz'
-                      connected='true'
+                      registryUri={props.registryUri as string}
+                      action="list"
                     />
                   </Suspense>
           )

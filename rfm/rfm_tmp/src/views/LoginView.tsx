@@ -61,8 +61,8 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
     localStorage.setItem('user', 'buyer');
 
     props.init({
-      registryUri: Users.buyer.REGISTRY_URI,
-      privateKey: Users.buyer.PRIVATE_KEY,
+      registryUri: Users.publisher.REGISTRY_URI,
+      privateKey: Users.publisher.PRIVATE_KEY,
       platform: props.platform,
       user: 'buyer'
     });

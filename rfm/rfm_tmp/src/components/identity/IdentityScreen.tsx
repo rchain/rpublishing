@@ -72,7 +72,7 @@ const IdentityScreenComponent: React.FC<IdentityScreenComponentProps> = (props) 
         />
         <IonRow>
           <IonCol>
-            <IonLabel>Theo Hallenius</IonLabel>
+            <IonLabel>NFT Buyer</IonLabel>
           </IonCol>
         </IonRow>
         <IonRow>
