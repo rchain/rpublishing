@@ -1,11 +1,11 @@
 export const Users = {
-         publisher: {
+         attestor: {
            PRIVATE_KEY:
              '6428f75c09db8b3a260fc1dcb1c93619bd3eecf6787b003ddc6ba5e87025c177',
            REGISTRY_URI:
              'gusp3piz6fbsdqyogbwg7kcqta3c49sxtc9fug96spsw51gsnag5br',
          },
-         attestor: {
+         publisher: {
            PRIVATE_KEY:
              '963a3d9828f03ba67fcfd7d13be7d905416a2864ef0d7527c4646d18be29d476',
            REGISTRY_URI:
