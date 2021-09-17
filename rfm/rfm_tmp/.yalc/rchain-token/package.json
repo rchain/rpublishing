@@ -1,0 +1,28 @@
+{
+  "name": "rchain-token",
+  "version": "4.0.0",
+  "description": "Fungibles and non-fungibles tokens on the RChain blockchain",
+  "main": "src/index.js",
+  "scripts": {
+    "generate": "node generateJavascripts",
+    "build:browser": "npx rollup -c",
+    "test": "node tests/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabcotech/rchain-token.git"
+  },
+  "author": "FABCO",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fabcotech/rchain-token/issues"
+  },
+  "homepage": "https://github.com/fabcotech/rchain-token#readme",
+  "dependencies": {
+    "blakejs": "^1.1.0",
+    "dotenv": "6.2.0",
+    "rchain-toolkit": "0.2.8",
+    "uuid": "3.4.0"
+  },
+  "yalcSig": "f3463dad679697c6eba90e9024c919fc"
+}

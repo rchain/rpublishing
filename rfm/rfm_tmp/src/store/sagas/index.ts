@@ -5,6 +5,7 @@ import { refreshSaga } from './refresh';
 import { loadBagDataSaga } from './loadBagData';
 import { uploadBagDataSaga } from './uploadBagData';
 import { reuploadBagDataSaga } from './reuploadBagData';
+import { purchaseBagSaga } from './purchaseBag';
 
 export const sagas = function* rootSaga() {
   yield all([
@@ -13,5 +14,6 @@ export const sagas = function* rootSaga() {
     loadBagDataSaga(),
     uploadBagDataSaga(),
     reuploadBagDataSaga(),
+    purchaseBagSaga(),
   ]);
 };

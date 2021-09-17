@@ -24,7 +24,7 @@ const {
   readBagsTerm,
   readBagsOrTokensDataTerm,
   read,
-} = require('rchain-token-files');
+} = require('rchain-token');
 
 const refresh = function* (action: { type: string; payload: any}) {
   const state : CombinedState<{ router: RouterState<unknown>; reducer: State; }> = store.getState();
