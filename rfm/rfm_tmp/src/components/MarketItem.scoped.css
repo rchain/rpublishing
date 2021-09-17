@@ -26,6 +26,18 @@ ion-icon {
   z-index: 3;
 }
 
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelContainer {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 5px 5px 5px;
+}
+
 ion-label {
   margin-top: 12px;
   margin-bottom: 12px;
@@ -87,8 +99,6 @@ ion-button.AddButton {
 }
 
 .signature-ok {
-  background: #4b5;
-  margin-right: 10px;
-  padding: 10px 10px 10px 10px;
-  border-radius: 5px;
+  color: #4b5;
+  margin-left: 5px;
 }

@@ -11,6 +11,7 @@ import {
 } from '@ionic/react';
 
 import { useHistory } from 'react-router';
+import { Dispatch } from 'redux';
 import { State, Bag, Document, HistoryState } from '../store';
 import './MarketItem.scoped.css';
 
@@ -25,17 +26,19 @@ interface MarketItemProps {
   completed: boolean;
   onlyCompleted: boolean;
   document: Document;
+  purchase: (registryUri: string, bagId: string) => void;
 }
 
-const MarketItemComponent: React.FC<MarketItemProps> = ({
-  onlyCompleted,
-  id,
-  awaitsSignature,
-  completed,
-  document,
-}) => {
-  console.log(document)
+const MarketItemComponent: React.FC<MarketItemProps> = (
+  props: MarketItemProps,
+) => {
+  const identity = localStorage.getItem('wallet');
   const history = useHistory();
+
+    let priceAsString: any = localStorage.getItem('price');
+  let parsePrice: number = JSON.parse(priceAsString);
+  console.log(parsePrice);
+
   return (
     <IonItemSliding className="container">
       <IonItemOptions side="end">
@@ -54,35 +57,71 @@ const MarketItemComponent: React.FC<MarketItemProps> = ({
       </IonItemOptions>
       <IonItem
         className={`${
-          !onlyCompleted && Object.keys(document.signatures).length > 1
+          !props.onlyCompleted && Object.keys(props.document.signatures).length > 1
             ? 'with-parent'
             : ''
-        } ${completed ? 'success' : 'secondary'}`}
+        } ${props.completed ? 'success' : 'secondary'}`}
         detail={false}
-        button
-        onClick={() => {
-          history.push('/doc/show/' + id);
-        }}
       >
-        <div className="IconContainer">
-          <IonIcon
-            icon={documentIcon}
-            color={completed ? 'success' : 'primary'}
-            size="large"
-          />
+        <div className="mainContainer">
+          <div className="IconContainer">
+            {['image/png', 'image/jpg', 'image/jpeg'].includes(
+              props.document.mimeType
+            ) ? (
+              <img
+                alt={props.document.name}
+                src={`data:${props.document.mimeType};base64, ${props.document.data}`}
+              />
+            ) : (
+              <React.Fragment />
+            )}
+          </div>
+          <div className="labelContainer">
+            <IonLabel className="ion-text-wrap">
+              <h2>{bagIdFromAddress(props.id)}</h2>
+            </IonLabel>
+            {!props.awaitsSignature && (
+              <IonLabel className="signature-ok">
+                <b>✓</b>
+              </IonLabel>
+            )}
+            {
+              (identity) ? ( undefined ) :
+              (<IonButton
+              onClick={() => {
+                props.purchase(props.registryUri, bagIdFromAddress(props.id));
+              }}
+            >
+              Buy for { parsePrice } rev
+            </IonButton>)}
+          </div>
         </div>
-        <IonLabel className="ion-text-wrap">
-          <h2>{bagIdFromAddress(id)}</h2>
-        </IonLabel>
-        {!awaitsSignature && <span className="signature-ok">✓ verified</span>}
       </IonItem>
     </IonItemSliding>
   );
 };
 
 const MarketItem = connect(
-  undefined,
-  undefined
+  (state: HistoryState) => {
+    return {
+      bags: state.reducer.bags,
+      bagsData: state.reducer.bagsData,
+      state: state,
+    };
+  },
+  (dispatch: Dispatch) => {
+    return {
+      purchase: (registryUri: string, bagId: string) => {
+        dispatch({
+          type: 'PURCHASE_BAG',
+          payload: {
+            bagId: bagId,
+            registryUri: registryUri,
+          },
+        });
+      },
+    };
+  }
 )(MarketItemComponent);
 
 export default MarketItem;

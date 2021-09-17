@@ -54,7 +54,7 @@
   "dependencies": {
     "elliptic": "^6.5.4",
     "pako": "^2.0.3",
-    "rchain-token-files": "fabcotech/rchain-token#aaf8df2b9715608f307647989f5f8f3e24565bae",
+    "rchain-token": "file:.yalc/rchain-token",
     "rchain-toolkit": "^0.2.8",
     "uint8arrays": "^1.1.0"
   }

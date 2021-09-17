@@ -12,7 +12,7 @@ import { Secp256k1Provider } from 'key-did-provider-secp256k1';
 import { DID, DagJWS } from 'dids';
 import { decodeBase64 } from 'dids/lib/utils';
 import dagCBOR from 'ipld-dag-cbor';
-const { readBagOrTokenDataTerm } = require('rchain-token-files');
+const { readBagOrTokenDataTerm } = require('rchain-token');
 
 const loadBagData = function*(action: { type: string; payload: any }) {
   console.log('load-bag-data', action.payload);
@@ -84,6 +84,7 @@ const loadBagData = function*(action: { type: string; payload: any }) {
       },
     });
   }
+  console.log("payload data", action.payload);
 
   did.deauthenticate();
 

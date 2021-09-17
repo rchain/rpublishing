@@ -15,14 +15,15 @@ import { Document, store } from '../';
 import replacer from '../../utils/replacer';
 import { getPrivateKey, HistoryState } from '../index';
 
-const { purchaseTokensTerm } = require('rchain-token-files');
+const { purchaseTokensTerm } = require('rchain-token');
 
 const uploadBagData = function*(action: {
   type: string;
   payload: { document: Document; bagId: string; recipient: string; price: number };
 }) {
   console.log('upload-bag-data', action.payload);
-  let repipient = action.payload.recipient;
+  let repipient =
+    'did:rchain:h44woki98qcuwhj3pxu131czudxtnznxqo6fxtpiyco9wahu1q3c4y';
   const document = action.payload.document;
   const state: HistoryState = store.getState();
 
@@ -73,16 +74,19 @@ const uploadBagData = function*(action: {
     newBagId: action.payload.bagId,
     bagId: '0',
     quantity: 1,
-    price: action.payload.price,
+    price: 1,
     bagNonce: v4().replace(/-/g, ''),
     data: gzipped,
   };
+
+  localStorage.setItem('price', JSON.stringify(action.payload.price));
 
   did.deauthenticate();
 
   const parsedDid = parse(repipient);
   const addr = parsedDid.id;
   const term = purchaseTokensTerm(addr, payload);
+  console.log(term);
 
   let validAfterBlockNumberResponse;
   try {
@@ -114,14 +118,27 @@ const uploadBagData = function*(action: {
     payload: {},
   });
 
-  console.log(state);
   Swal.fire({
-    title: 'Success!',
-    text: 'document upload successful',
+    text: 'Upload is in progress',
     showConfirmButton: false,
-    timer: 2500,
+    timer: 30000,
   });
-  window.location.reload();
+
+
+  console.log(state);
+ function notify() {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Upload complete',
+            showConfirmButton: false,
+            timer: 10000,
+        })
+    }
+  setTimeout(() => { notify() }, 30000);
+  
+  setTimeout(() => {
+    window.location.reload();
+  }, 30000);
   return true;
 };
 

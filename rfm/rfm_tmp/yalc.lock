@@ -9,6 +9,10 @@
       "signature": "58470c52a1afba22b3cd142fa8016f5e",
       "file": true,
       "replaced": "https://github.com/TheoXD/rchain-did-resolver.git"
+    },
+    "rchain-token": {
+      "signature": "f3463dad679697c6eba90e9024c919fc",
+      "file": true
     }
   }
 }

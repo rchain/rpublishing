@@ -223,7 +223,7 @@ class ModalUploadDocumentComponent extends React.Component<
             </IonLabel>
             <IonInput 
               className="label"
-              placeholder="enter price of nft"
+              placeholder="enter price(in rev) of nft"
               type="number"
               value={this.state.price}
               onIonChange={e =>
@@ -264,7 +264,7 @@ class ModalUploadDocumentComponent extends React.Component<
             </IonLabel>
             <IonInput
               className="label"
-              placeholder="did:rchain:<registryUri>"
+              placeholder="Enter name of Attestor"
               type="text"
               value={this.state.recipient}
               onIonChange={e =>

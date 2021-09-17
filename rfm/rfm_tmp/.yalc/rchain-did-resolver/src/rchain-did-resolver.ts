@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import * as rchainToolkit from 'rchain-toolkit'
-const { readBagOrTokenDataTerm, read } = require('rchain-token-files')
+const { readBagOrTokenDataTerm, read } = require('rchain-token')
 import { inflate } from 'pako'
 import * as u8a from 'uint8arrays'
 import { ec as EC } from 'elliptic'

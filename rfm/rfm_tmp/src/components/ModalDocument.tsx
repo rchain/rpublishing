@@ -119,9 +119,9 @@ const ModalDocumentComponent: React.FC<ModalDocumentProps> = (
       </IonHeader>
       */}
       <IonContent className="modal-document">
-        <div className="TopLeftStrip"><IonButton className="DownloadButton" onClick={() => {
+        {/* <div className="TopLeftStrip"><IonButton className="DownloadButton" onClick={() => {
           doDownload();
-        }}><IonIcon icon={downloadOutline} size="small" /><IonLabel>Download</IonLabel></IonButton></div>
+        }}><IonIcon icon={downloadOutline} size="small" /><IonLabel>Download</IonLabel></IonButton></div> */}
         {document && 'application/pdf' === document.mimeType ? (
           <PdfDocument
             file={'data:application/pdf;base64,' + document.data}

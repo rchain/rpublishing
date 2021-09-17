@@ -36,6 +36,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
 
   const handlePublisherLogin = async() => {
     localStorage.removeItem('user');
+    localStorage.setItem('publisher', 'true')
   
     props.init({
       registryUri: Users.publisher.REGISTRY_URI,
@@ -48,6 +49,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
 
   const handleAttestorLogin = async () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('publisher');
 
     props.init({
       registryUri: Users.attestor.REGISTRY_URI,
@@ -57,8 +59,9 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
     });
   };
 
-  const handleBuyerLogin = async () => {
+  const handleStoreLogin = async () => {
     localStorage.setItem('user', 'buyer');
+    localStorage.removeItem('wallet');
 
     props.init({
       registryUri: Users.publisher.REGISTRY_URI,
@@ -67,6 +70,18 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
       user: 'buyer'
     });
   }
+
+   const handleUserLogin = async () => {
+     localStorage.setItem('user', 'buyer');
+     localStorage.setItem('wallet', 'true');
+
+     props.init({
+       registryUri: Users.buyer.REGISTRY_URI,
+       privateKey: Users.buyer.PRIVATE_KEY,
+       platform: props.platform,
+       user: 'buyer',
+     });
+   };
 
   return (
     <IonContent>
@@ -79,7 +94,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
               <div className="container">
                 {/* Publisher */}
                 <div className="LoadButtonDiv">
-                  <IonButton 
+                  <IonButton
                     onClick={async () => {
                       handlePublisherLogin();
                     }}
@@ -101,10 +116,20 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 <div className="LoadButtonDiv">
                   <IonButton
                     onClick={async () => {
-                      handleBuyerLogin();
+                      handleStoreLogin();
                     }}
                   >
-                    Buy
+                    Marketplace
+                  </IonButton>
+                </div>
+                {/* wallet*/}
+                <div className="LoadButtonDiv">
+                  <IonButton
+                    onClick={async () => {
+                      handleUserLogin();
+                    }}
+                  >
+                    Owned NFTs
                   </IonButton>
                 </div>
               </div>

@@ -15,7 +15,7 @@ import { Document, store, getBagsData } from '../';
 import replacer from '../../utils/replacer';
 import { getPrivateKey, HistoryState } from '../index';
 
-const { purchaseTokensTerm } = require('rchain-token-files');
+const { purchaseTokensTerm } = require('rchain-token');
 
 const reuploadBagData = function*(action: {
   type: string;
@@ -24,6 +24,7 @@ const reuploadBagData = function*(action: {
   console.log('reuploload-bag-data', action.payload);
   const state: HistoryState = store.getState();
   const bagsData = getBagsData(state);
+  console.log(bagsData);
 
   const publicKey = state.reducer.publicKey;
   const privateKey = yield getPrivateKey(state);
@@ -38,23 +39,25 @@ const reuploadBagData = function*(action: {
 
   const document =
     bagsData[`${action.payload.registryUri}/${action.payload.bagId}`];
+  console.log(document);
   if (!document) {
     console.error('bagData/document not found');
     return;
   }
 
   let i = '0';
+  let suffix = 'nft'
   let newBagId = action.payload.bagId;
   if (!document.signatures['0']) {
   } else if (!document.signatures['1']) {
     i = '1';
-    newBagId = `${action.payload.bagId} ${parseInt(i, 10) + 1}`;
+    newBagId = `${action.payload.bagId} ${suffix}`;
   } else if (!document.signatures['2']) {
     i = '2';
     newBagId = `${action.payload.bagId.slice(
       0,
       action.payload.bagId.length - 1
-    )} ${parseInt(i, 10) + 1}`;
+    )} ${suffix}`;
   } else {
     console.error('Signature 0, 1 and 2 are already on document');
     return;
@@ -95,6 +98,9 @@ const reuploadBagData = function*(action: {
   const stringifiedJws = JSON.stringify(jwe, replacer);
   const deflatedJws = deflate(stringifiedJws);
   const gzipped = Buffer.from(deflatedJws).toString('base64');
+
+  let priceAsString: any = localStorage.getItem('price');
+  let parsePrice: number = JSON.parse(priceAsString);
 
   const payload = {
     publicKey: publicKey,
@@ -141,12 +147,25 @@ const reuploadBagData = function*(action: {
   });
 
   Swal.fire({
-    title: 'Success!',
-    text: 'document upload successful',
+    text: 'Attestation is in progress',
     showConfirmButton: false,
-    timer: 2500,
+    timer: 30000,
   });
-  window.location.reload();
+
+
+ function notify() {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Attestation complete',
+            showConfirmButton: false,
+            timer: 10000,
+        })
+    }
+    setTimeout(() => { notify() }, 30000);
+
+  setTimeout(() => {
+    window.location.reload();
+  }, 30000);
   return true;
 };
 
