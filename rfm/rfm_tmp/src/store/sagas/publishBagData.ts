@@ -1,32 +1,28 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import * as rchainToolkit from 'rchain-toolkit';
 import { deflate } from 'pako';
-import { v4 } from 'uuid';
 import Swal from 'sweetalert2';
 
 import KeyResolver from 'key-did-resolver';
 import { getResolver as getRchainResolver } from 'rchain-did-resolver';
 import { Secp256k1Provider } from 'key-did-provider-secp256k1';
 import { DID } from 'dids';
-import { encodeBase64 } from 'dids/lib/utils';
 import { parse } from 'did-resolver';
+import { encodeBase64 } from 'dids/lib/utils';
 
-import { Folder, store } from '../';
+import { Folder, store, getBagsData } from '../';
 import replacer from '../../utils/replacer';
 import { getPrivateKey, HistoryState } from '../index';
 
 const { createPursesTerm } = require('rchain-token');
 
-
-const uploadBagData = function*(action: {
+const publishBagData = function*(action: {
   type: string;
-  payload: { folder: Folder; bagId: string; recipient: string; price: number, mainFile: string };
+  payload: { bagId: string; registryUri: string, price: number};
 }) {
-  console.log('upload-bag-data', action.payload);
-  let recipient = action.payload.recipient;
-  const folder = action.payload.folder;
-  const newBagId = action.payload.bagId;
+  console.log('reuploload-bag-data', action.payload);
   const state: HistoryState = store.getState();
+  const bagsData = getBagsData(state);
 
   const publicKey = state.reducer.publicKey;
   const privateKey = yield getPrivateKey(state);
@@ -39,66 +35,56 @@ const uploadBagData = function*(action: {
 
   yield did.authenticate({ provider: provider });
 
-  let recipientDid;
-  if (recipient) {
-    recipientDid = 'did:rchain:' + state.reducer.registryUri + "/" + recipient;
-  } else {
-    recipientDid = 'did:rchain:' + state.reducer.registryUri + "/" + state.reducer.user;
+  const folder =
+    bagsData[`${action.payload.registryUri}/${action.payload.bagId}`];
+  if (!folder) {
+    console.error('bagData/document not found');
+    return;
   }
 
+  let newBagId = action.payload.bagId;
+
+  const signedDocument = {
+    ...folder,
+    date: folder.date,
+  };
 
   const fileDocument = {
-    files: folder.files,
-    signatures: folder.signatures,
-    date: folder.date,
-    scheme: {
-      '0': recipientDid,
-      '1': 'did:rchain:' + state.reducer.registryUri + "/" + state.reducer.user
-    },
-    mainFile: action.payload.mainFile || Object.keys(folder.files)[0]
+    ...signedDocument,
   } as Folder;
 
-
+  
   const { jws, linkedBlock } = yield did.createDagJWS(fileDocument);
-  
-  const jwe = yield did.createDagJWE(
-    { jws: jws, data: encodeBase64(linkedBlock) },
-    [recipientDid],
-    {
-      protectedHeader: {
-        alg: 'A256GCMKW',
-      },
-    }
-  );
-  
-  const stringifiedJws = JSON.stringify(jwe, replacer);
+  const jwsToken = { jws: jws, data: encodeBase64(linkedBlock) };
+
+  const stringifiedJws = JSON.stringify(jwsToken, replacer);
   const deflatedJws = deflate(stringifiedJws);
   const gzipped = Buffer.from(deflatedJws).toString('base64');
+
+  let parsedPriceInDust = action.payload.price * 100000000;
 
   const payload = {
     purses: {
       [newBagId]: {
-        id: newBagId,
-        boxId: recipient,
+        id: newBagId, // will be ignored, contract is fugible contract
+        boxId: state.reducer.user,
         type: '0',
         quantity: 1,
-        price: null,
+        price: parsedPriceInDust,
       }
     },
     data: {
       [newBagId]: gzipped
     },
     masterRegistryUri: state.reducer.registryUri,
-    contractId: "store",
+    contractId: "public_store",
     boxId: state.reducer.user,
   };
-
-  localStorage.setItem('price', JSON.stringify(action.payload.price));
 
   did.deauthenticate();
   
   const term = createPursesTerm(payload);
-
+  
   let validAfterBlockNumberResponse;
   try {
     validAfterBlockNumberResponse = JSON.parse(
@@ -110,7 +96,7 @@ const uploadBagData = function*(action: {
     console.log(err);
     throw new Error('Unable to get last finalized block');
   }
-
+  
   const timestamp = new Date().getTime();
   const deployOptions = yield rchainToolkit.utils.getDeployOptions(
     'secp256k1',
@@ -122,48 +108,37 @@ const uploadBagData = function*(action: {
     4000000000,
     validAfterBlockNumberResponse
   );
+  yield rchainToolkit.http.deploy(state.reducer.validatorUrl, deployOptions);
   
 
-  try {
-    const deployResponse = yield rchainToolkit.http.deploy(state.reducer.validatorUrl, deployOptions);
-    if (!deployResponse.startsWith('"Success!')) {
-      console.log(deployResponse);
-    }
-  }
-  catch(err) {
-    console.info("Unable to deploy");
-    console.error(err);
-  }
-  
   yield put({
     type: 'PURCHASE_BAG_COMPLETED',
     payload: {},
   });
 
   Swal.fire({
-    text: 'Upload is in progress',
+    text: 'Publishing is in progress',
     showConfirmButton: false,
     timer: 30000,
   });
 
 
-  console.log(state);
  function notify() {
         Swal.fire({
             title: 'Success!',
-            text: 'Upload complete',
+            text: 'Publishing complete',
             showConfirmButton: false,
             timer: 10000,
         })
     }
-  setTimeout(() => { notify() }, 30000);
-  
+    setTimeout(() => { notify() }, 30000);
+
   setTimeout(() => {
     window.location.reload();
   }, 30000);
   return true;
 };
 
-export const uploadBagDataSaga = function*() {
-  yield takeEvery('UPLOAD', uploadBagData);
+export const publishBagDataSaga = function*() {
+  yield takeEvery('PUBLISH_BAG_DATA', publishBagData);
 };

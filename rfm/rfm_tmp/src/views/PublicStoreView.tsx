@@ -22,11 +22,9 @@ import {
   State,
   HistoryState,
 } from '../store';
-import Horizontal from '../components/Horizontal';
 import MarketItem from '../components/MarketItem';
 import DummyBagItem from '../components/dummy/DummyBagItem';
 import ModalDocument from '../components/ModalDocument';
-import ModalUploadDocument from '../components/ModalUploadDocument';
 
 import { parse } from 'did-resolver';
 import './PublicStore.scoped.css';
@@ -130,7 +128,7 @@ const PublicStoreComponent: React.FC<PublicDocumentView> = props => {
                       registryUri={props.registryUri}
                       id={address}
                       bag={props.bags[address]}
-                      document={props.bagsData[address]}
+                      folder={props.bagsData[address]}
                       onlyCompleted={false}
                       awaitsSignature={!!props.documentsAwaitingSignature[address]}
                       completed={!!props.documentsCompleted[address]}                   />
