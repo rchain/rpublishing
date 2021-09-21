@@ -151,7 +151,7 @@ const DockListViewComponent: React.FC<DockListViewProps> = props => {
                     registryUri={props.registryUri}
                     id={address}
                     bag={props.bags[address]}
-                    document={props.bagsData[address]}
+                    folder={props.bagsData[address]}
                     onlyCompleted={false}
                     awaitsSignature={
                       !!props.documentsAwaitingSignature[address]
