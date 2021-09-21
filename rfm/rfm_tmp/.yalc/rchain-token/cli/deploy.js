@@ -1,26 +1,41 @@
 const rchainToolkit = require('rchain-toolkit');
-const uuidv4 = require('uuid/v4');
 const fs = require('fs');
 
-const { mainTerm } = require('../src/');
-
+const { VERSION } = require('../constants');
+const { deployTerm } = require('../src/');
+const waitForUnforgeable = require('./waitForUnforgeable').main;
 const {
   log,
   validAfterBlockNumber,
   prepareDeploy,
+  getMasterRegistryUri,
+  getFungible,
+  getContractId,
+  getExpires,
   logData,
-  getBagsFile,
+  getBoxId,
 } = require('./utils');
 
 module.exports.deploy = async () => {
-  if (typeof process.env.REGISTRY_URI === 'string') {
-    console.log('Please remove REGISTRY_URI=* line in .env file');
+  if (typeof process.env.CONTRACT_ID === 'string') {
+    console.log('Please remove CONTRACT_ID=* line in .env file');
     process.exit();
   }
+  const masterRegistryUri = getMasterRegistryUri();
+  const fungible = getFungible();
+  const contractId = getContractId();
+  const expires = getExpires();
+  const boxId = getBoxId();
+
+  console.log(
+    `Will deploy a\x1b[36m`,
+    fungible ? 'fungible' : 'non-fungible',
+    '\x1b[0mtokens contract'
+  );
   const publicKey = rchainToolkit.utils.publicKeyFromPrivateKey(
     process.env.PRIVATE_KEY
   );
-  const newNonce = uuidv4().replace(/-/g, '');
+
   const timestamp = new Date().getTime();
   const vab = await validAfterBlockNumber(process.env.READ_ONLY_HOST);
   const pd = await prepareDeploy(
@@ -28,33 +43,19 @@ module.exports.deploy = async () => {
     publicKey,
     timestamp
   );
-  const bagsFile = getBagsFile() ? fs.readFileSync(getBagsFile(), 'utf8') : '';
-  const defaultBagsData = {};
-  const defaultBags = {};
-  if (bagsFile) {
-    const bags = JSON.parse(bagsFile);
-    Object.keys(bags).forEach((bagId) => {
-      defaultBagsData[bagId] = bags[bagId].data;
-      delete bags[bagId].data;
-      defaultBags[bagId] = bags[bagId];
-    });
-    log(Object.keys(defaultBags).length + ' bags found in json file');
-    log(Object.keys(defaultBagsData).length + ' bags data found in json file');
-  }
 
-  const defaultBagsAsString = JSON.stringify(defaultBags).replace(
-    new RegExp(': null|:null', 'g'),
-    ': Nil'
-  );
+  const term = deployTerm({
+    masterRegistryUri: masterRegistryUri,
+    boxId: boxId,
+    fungible: fungible,
+    contractId: contractId,
+    fee: null,
+    expires: expires,
+  });
 
-  const defaultBagsDataAsString = JSON.stringify(defaultBagsData).replace(
-    new RegExp(': null|:null', 'g'),
-    ': Nil'
-  );
-
-  const term = mainTerm(newNonce, publicKey)
-    .replace('{/*DEFAULT_BAGS*/}', defaultBagsAsString)
-    .replace('{/*DEFAULT_BAGS_DATA*/}', defaultBagsDataAsString);
+  //  .replace('/*DEFAULT_BAGS_IDS*/', defaultBagsIdsRholang)
+  //   .replace('/*DEFAULT_BAGS*/', defaultBagsRholang)
+  //   .replace('/*DEFAULT_BAGS_DATA*/', defaultBagsDataRholang);
 
   log('✓ prepare deploy');
 
@@ -65,7 +66,7 @@ module.exports.deploy = async () => {
     process.env.PRIVATE_KEY,
     publicKey,
     1,
-    1000000,
+    10000000,
     vab || -1
   );
 
@@ -88,45 +89,7 @@ module.exports.deploy = async () => {
 
   let dataAtNameResponse;
   try {
-    dataAtNameResponse = await new Promise((resolve, reject) => {
-      const interval = setInterval(() => {
-        try {
-          rchainToolkit.http
-            .dataAtName(process.env.VALIDATOR_HOST, {
-              name: {
-                UnforgPrivate: { data: JSON.parse(pd).names[0] },
-              },
-              depth: 3,
-            })
-            .then((dataAtNameResponse) => {
-              if (
-                dataAtNameResponse &&
-                JSON.parse(dataAtNameResponse) &&
-                JSON.parse(dataAtNameResponse).exprs &&
-                JSON.parse(dataAtNameResponse).exprs.length
-              ) {
-                resolve(dataAtNameResponse);
-                clearInterval(interval);
-              } else {
-                log(
-                  'Did not find transaction data, will try again in 15 seconds'
-                );
-              }
-            })
-            .catch((err) => {
-              log(
-                'Cannot retreive transaction data, will try again in 15 seconds'
-              );
-              console.log(err);
-              process.exit();
-            });
-        } catch (err) {
-          log('Cannot retreive transaction data, will try again in 15 seconds');
-          console.log(err);
-          process.exit();
-        }
-      }, 15000);
-    });
+    dataAtNameResponse = await waitForUnforgeable(JSON.parse(pd).names[0]);
   } catch (err) {
     log('Failed to parse dataAtName response', 'error');
     console.log(err);
@@ -135,15 +98,20 @@ module.exports.deploy = async () => {
   const data = rchainToolkit.utils.rhoValToJs(
     JSON.parse(dataAtNameResponse).exprs[0].expr
   );
+  if (data.status !== 'completed') {
+    console.log(data);
+    process.exit();
+  }
   let envText = fs.readFileSync('./.env', 'utf8');
-  envText += `\nREGISTRY_URI=${data.registryUri.replace('rho:id:', '')}`;
+  envText += `\nCONTRACT_ID=${contractId}`;
   fs.writeFileSync('./.env', envText, 'utf8');
   log('✓ deployed and retrieved data from the blockchain');
-  log(
-    `✓ updated .env file with REGISTRY_URI=${data.registryUri.replace(
-      'rho:id:',
-      ''
-    )}`
-  );
-  logData(data);
+  log(`✓ updated .env file with CONTRACT_ID=${contractId}`);
+  logData({
+    masterRegistryUri,
+    contractId,
+    fungible,
+    locked: false,
+    version: VERSION,
+  });
 };
