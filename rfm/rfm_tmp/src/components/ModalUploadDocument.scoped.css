@@ -41,7 +41,7 @@ ion-button.AddButton {
 
 .drop-area {
   margin-top: 5px;
-  width: 100%;
+  width: 90%;
   height: 10em;
   border: 1px solid #ccc;
   border-radius: 5px;

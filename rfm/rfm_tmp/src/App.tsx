@@ -29,6 +29,7 @@ import IdentityScreen from './components/identity/IdentityScreen';
 import { personCircle, closeCircleOutline, pin } from 'ionicons/icons';
 
 import { Device } from "@capacitor/device";
+import Eve from './assets/eve.png';
 
 const LoginView = React.lazy(() => import('./views/LoginView'));
 const DockListView = React.lazy(() => import('./views/DocListView'));
@@ -197,6 +198,7 @@ const AppComponent: React.FC<AppProps> = props => {
         </div>
       </IonHeader>
       <IonContent>
+        <img className="EveSignature" src={Eve} alt="Eve Arnold" />
         <RChainLogo className="BackgroundLogo" />
 
         {

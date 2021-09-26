@@ -101,7 +101,7 @@ const MarketItemComponent: React.FC<MarketItemProps> = (
                 props.purchase(props.registryUri, bagIdFromAddress(props.id), props.bag.price || 0);
               }}
             >
-              Buy for { (props.bag.price || 0) * (1 / 100000000) } rev
+              Buy for { (props.bag.price || 0) * (1 / 100000000) } REV
             </IonButton>)}
           </div>
         </div>
