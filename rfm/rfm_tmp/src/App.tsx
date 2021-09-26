@@ -30,6 +30,7 @@ import { personCircle, closeCircleOutline, pin } from 'ionicons/icons';
 
 import { Device } from "@capacitor/device";
 
+
 const LoginView = React.lazy(() => import('./views/LoginView'));
 const DockListView = React.lazy(() => import('./views/DocListView'));
 const PublicStore = React.lazy(() => import('./views/PublicStoreView'));
@@ -197,6 +198,7 @@ const AppComponent: React.FC<AppProps> = props => {
         </div>
       </IonHeader>
       <IonContent>
+        
         <RChainLogo className="BackgroundLogo" />
 
         {
