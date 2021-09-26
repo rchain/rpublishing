@@ -149,6 +149,7 @@ const AppComponent: React.FC<AppProps> = props => {
   return (
     
     <IonPage id="home-page">
+      
       <IonHeader no-border no-shadow className="ion-no-border">
         <IonToolbar className="noSafeAreaPaddingTop">
           <IonTitle className="main-title">RChain NFT</IonTitle>
@@ -198,8 +199,7 @@ const AppComponent: React.FC<AppProps> = props => {
         </div>
       </IonHeader>
       <IonContent>
-        
-        <RChainLogo className="BackgroundLogo" />
+        { /*<RChainLogo className="BackgroundLogo" /> */ }
 
         {
           (identity === "buyer") ? (

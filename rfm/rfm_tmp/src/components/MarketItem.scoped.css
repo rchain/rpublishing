@@ -83,11 +83,13 @@ ion-item ion-note.md {
 .ImageFrame {
   padding: 0.6em;
   min-width: 8em;
+  max-width: 16em;
 }
 
 .ImageFrame.main {
   padding: 0.6em;
   min-width: 12em;
+  max-width: 22em;
 }
 
 .Image {
