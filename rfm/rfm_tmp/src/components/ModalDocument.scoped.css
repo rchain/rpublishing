@@ -80,12 +80,14 @@
   padding: 0.6em;
   margin-top: 2em;
   min-width: 8em;
+  max-width: 16em;
 }
 
 .ImageFrame.main {
   padding: 0.6em;
   margin-top: 2em;
   min-width: 8em;
+  max-width: 22em;
 }
 
 .Image {
