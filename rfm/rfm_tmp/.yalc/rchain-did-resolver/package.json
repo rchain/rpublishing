@@ -1,6 +1,6 @@
 {
   "name": "rchain-did-resolver",
-  "version": "2.1.2+3540ecda",
+  "version": "2.1.2+c9473c49",
   "description": "Resolve DID documents from rchain testnet",
   "main": "lib/rchain-did-resolver.js",
   "types": "lib/rchain-did-resolver.d.ts",
