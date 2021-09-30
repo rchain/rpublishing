@@ -8,6 +8,7 @@ const {
   getQuantity,
   getRegistryUri,
   getPrice,
+  getNewBagId,
   log,
   validAfterBlockNumber,
 } = require('./utils');
@@ -18,12 +19,14 @@ module.exports.purchaseTokens = async () => {
     process.env.PRIVATE_KEY
   );
   const bagId = getFromBagId();
+  const newBagId = getNewBagId();
   const quantity = getQuantity();
   const price = getPrice();
   const bagNonce = uuidv4().replace(/-/g, '');
 
   const term = purchaseTokensTerm(registryUri, {
     publicKey: publicKey,
+    newBagId: newBagId,
     bagId: bagId,
     quantity: quantity,
     price: price,

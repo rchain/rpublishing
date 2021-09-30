@@ -2,8 +2,8 @@ import { takeEvery, put } from 'redux-saga/effects';
 import * as rchainToolkit from 'rchain-toolkit';
 import {CombinedState} from 'redux';
 
-import { store, State, Bag, AccountStorage, Folder, Signature } from '..';
-import { addressFromPurseId } from '../../utils/addressFromPurseId';
+import { store, State, Bag, AccountStorage, Document, Signature } from '..';
+import { addressFromBagId } from '../../utils/addressFromBagId';
 import { inflate } from 'pako';
 
 import { push, RouterState } from 'connected-react-router';
@@ -23,11 +23,10 @@ import { JWE } from 'did-jwt'
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 
 const {
-  readPursesTerm,
-  readBoxTerm,
-  readPursesDataTerm,
-  readConfigTerm
-} = require("rchain-token")
+  readBagsTerm,
+  readBagsOrTokensDataTerm,
+  read,
+} = require('rchain-token');
 
 const load = function* (action: { type: string; payload: any}) {
   const state : CombinedState<{ router: RouterState<unknown>; reducer: State; }> = store.getState();
@@ -38,57 +37,35 @@ const load = function* (action: { type: string; payload: any}) {
     }
   );
 
-  const pubKey = action.payload.publicKey;
-  const registryUri = action.payload.registryUri;
-  const user = action.payload.user;
-  const storeStr = action.payload.store;
-
-
-  const term2 = readBoxTerm({ boxId: user, masterRegistryUri: registryUri });
-  const readBoxResult = yield rchainToolkit.http.exploreDeploy(
-    state.reducer.readOnlyUrl,
-    {
-      term: term2
-    }
+  const pubKey = rchainToolkit.utils.publicKeyFromPrivateKey(
+    action.payload.privateKey as string
   )
-  const box = rchainToolkit.utils.rhoValToJs(JSON.parse(readBoxResult).expr[0]);
 
-  const pursesIds = Object.keys(box.purses).length > 0 ? box.purses[storeStr] : [];
-  const term1 = readPursesTerm({
-    masterRegistryUri: registryUri,
-    contractId: storeStr,
-    pursesIds: pursesIds || [],
-  });
-
-  const readAllPursesResult = yield rchainToolkit.http.exploreDeploy(
+  const term1 = readBagsTerm(action.payload.registryUri);
+  const ed1 = yield rchainToolkit.http.exploreDeploy(
     state.reducer.readOnlyUrl,
     {
       term: term1
     }
   )
 
-    const expr = JSON.parse(readAllPursesResult).expr;
-  const boxData = rchainToolkit.utils.rhoValToJs(expr ? expr[0] : {});
-
-  const purses =  boxData;
-  const pursesKeys = Object.keys(purses || {});
-  let readPursesDataResult;
-  if (pursesKeys.length > 0) {
-    const term3 = readPursesDataTerm(
+  const term2 = read(action.payload.registryUri);
+  const ed2 = yield rchainToolkit.http.exploreDeploy(
+    state.reducer.readOnlyUrl,
     {
-      masterRegistryUri: registryUri,
-      pursesIds: pursesKeys,
-      contractId: storeStr,
-    });
-    readPursesDataResult = yield rchainToolkit.http.exploreDeploy(
-      state.reducer.readOnlyUrl,
-      {
-        term: term3
-      }
-    )
-  }
+      term: term2
+    }
+  )
 
-  const rchainTokenValues = rchainToolkit.utils.rhoValToJs(JSON.parse(readBoxResult).expr[0])
+  const term3 = readBagsOrTokensDataTerm(action.payload.registryUri, 'bags');
+  const ed3 = yield rchainToolkit.http.exploreDeploy(
+    state.reducer.readOnlyUrl,
+    {
+      term: term3
+    }
+  )
+
+  const rchainTokenValues = rchainToolkit.utils.rhoValToJs(JSON.parse(ed2).expr[0])
   
   if (["ios", "android"].includes(state.reducer.platform)) {
     const available = yield FingerprintAIO.isAvailable();
@@ -125,26 +102,25 @@ const load = function* (action: { type: string; payload: any}) {
           authorised: true,
           registryUri: action.payload.registryUri,
           publicKey: pubKey,
-          user: user
         }
       }
     );
   }
-  
+
   yield put(
     {
       type: "INIT_COMPLETED",
       payload: {
+        nonce: rchainTokenValues.nonce,
         contractPublicKey: rchainTokenValues.publicKey,
       }
     }
   );
 
-  const expr2 = JSON.parse(readAllPursesResult).expr;
-  const bags = rchainToolkit.utils.rhoValToJs(expr2 ? expr2[0] : {}) || {};
+  const bags = rchainToolkit.utils.rhoValToJs(JSON.parse(ed1).expr[0]);
   const newBags: { [address: string]: Bag } = {};
   Object.keys(bags).forEach(bagId => {
-    newBags[addressFromPurseId(action.payload.registryUri as string, bagId)] = bags[bagId];
+    newBags[addressFromBagId(action.payload.registryUri as string, bagId)] = bags[bagId];
   });
   yield put(
     {
@@ -152,68 +128,55 @@ const load = function* (action: { type: string; payload: any}) {
       payload: newBags,
     }
   );
-  
-  let bagsData = Object();
-  if (readPursesDataResult) {
-  bagsData = rchainToolkit.utils.rhoValToJs(JSON.parse(readPursesDataResult).expr[0]);
 
-  const newBagsData: { [address: string]: Folder } = {};
-
+  const bagsData = rchainToolkit.utils.rhoValToJs(JSON.parse(ed3).expr[0]);
+  const newBagsData: { [address: string]: Document } = {};
 
   Object.keys(bagsData).forEach(async bagId => {
     const dataAtNameBuffer = Buffer.from(decodeURI(bagsData[bagId]), 'base64');
     const unzippedBuffer = Buffer.from(inflate(dataAtNameBuffer));
     const fileAsString = unzippedBuffer.toString("utf-8");
-    
-    let dagJwsObj : DagJWS;
-    let dagJwsData : string;
-    if (storeStr === "store") {
-      const jwe = JSON.parse(fileAsString) as JWE;
-      let jws;
-      try {
-        jws = await did.decryptDagJWE(jwe);
-      } catch(err) {
-        console.info("Unable to decrypt. " + err);
-        return;
-      }
-      dagJwsObj = jws?.jws;
-      dagJwsData = jws?.data
-    } else {
-      const jws = JSON.parse(fileAsString);
-      dagJwsObj = jws?.jws;
-      dagJwsData = jws?.data;
+
+    const jwe = JSON.parse(fileAsString) as JWE;
+    let jws;
+    try {
+      jws = await did.decryptDagJWE(jwe);
+    } catch(err) {
+      console.info("Unable to decrypt. " + err);
+      return;
     }
-    
-    if (dagJwsObj && dagJwsData) {
+    const dagJws: DagJWS = jws?.jws;
+    if (dagJws) {
       try {
-        const verified = await did.verifyJWS(dagJwsObj);
+        const verified = await did.verifyJWS(dagJws);
 
         const resolved = await did.resolve(verified.kid);
         const publicKey = resolved.publicKey[0].publicKeyHex;
 
-        const fileAsJson = dagCBOR.util.deserialize(decodeBase64(dagJwsData)) as Folder;
+        const fileAsJson = dagCBOR.util.deserialize(decodeBase64(jws.data)) as Document;
+        fileAsJson.data = Buffer.from(fileAsJson.data, 'base64').toString("utf-8");
 
         const signature = {
-          ...dagJwsObj.signatures[0],
-          payload: dagJwsObj.payload,
+          ...dagJws.signatures[0],
+          payload: dagJws.payload,
           publicKey: publicKey
         } as Signature;
 
         const signatureCount = Object.keys(fileAsJson.signatures).length;
         fileAsJson.signatures[signatureCount] = signature;
         
-        newBagsData[addressFromPurseId(action.payload.registryUri as string, bagId)] = fileAsJson;
+        newBagsData[addressFromBagId(action.payload.registryUri as string, bagId)] = fileAsJson;
       }
       catch(err) {
         console.info("Unable to verify. " + err);
       }
       
     }
-    
-    
-    
 
   });
+
+  did.deauthenticate();
+
   yield put(
     {
       type: "SAVE_BAGS_DATA_COMPLETED",
@@ -221,11 +184,6 @@ const load = function* (action: { type: string; payload: any}) {
     }
   );
   console.log("this is init", newBagsData)
-
-  }
-  
-  did.deauthenticate();
-  
 
   yield put(
     {

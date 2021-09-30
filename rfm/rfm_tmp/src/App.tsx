@@ -15,7 +15,8 @@ import {
   IonIcon,
   IonSlides,
   IonSlide,
-  IonLabel
+  IonLabel,
+  IonSpinner
 } from '@ionic/react';
 import './App.scss';
 import './App.scoped.css';
@@ -29,7 +30,6 @@ import { personCircle, closeCircleOutline, pin } from 'ionicons/icons';
 
 import { Device } from "@capacitor/device";
 
-
 const LoginView = React.lazy(() => import('./views/LoginView'));
 const DockListView = React.lazy(() => import('./views/DocListView'));
 const PublicStore = React.lazy(() => import('./views/PublicStoreView'));
@@ -38,7 +38,6 @@ interface AppProps {
   authorised: boolean;
   isLoading: boolean;
   registryUri: undefined | string;
-  user: string;
   bags: { [id: string]: Bag };
   init: (a: { registryUri: string; privateKey: string; user: string }) => void;
   setPlatform: (platform: string) => void;
@@ -49,7 +48,7 @@ const AppComponent: React.FC<AppProps> = props => {
   const redfill = React.useRef(null);
   const [showIdentity, setShowIdentity] = useState(false);
 
-  const identity: any = localStorage.getItem('user'); //TODO
+  const identity: any = localStorage.getItem('user');
 
     props.setUser(identity);
     console.log(identity);
@@ -81,12 +80,6 @@ const AppComponent: React.FC<AppProps> = props => {
       console.info(value);
     });
   };
-
-  function reload() {
-    setTimeout(() => {
-    window.location.reload();
-  }, 100);
-  }
 
 
   if (!props.authorised) {
@@ -154,14 +147,9 @@ const AppComponent: React.FC<AppProps> = props => {
   return (
     
     <IonPage id="home-page">
-      
-      <IonHeader no-border no-shadow className="ion-no-border">
+      <IonHeader no-border className="ion-no-border RoundedHeader">
         <IonToolbar className="noSafeAreaPaddingTop">
-          <IonTitle className="main-title" 
-            onClick={() => {
-           reload()
-          }}
-          >RChain NFT</IonTitle>
+          <IonTitle className="main-title">RChain NFT</IonTitle>
           <IonButton
             slot="end"
             icon-only
@@ -175,7 +163,7 @@ const AppComponent: React.FC<AppProps> = props => {
               <IonIcon icon={closeCircleOutline} size="large" />
             ) : (
                 <div className="UserInfo" >
-                  <IonLabel>{props.user}</IonLabel>
+                  <IonLabel>{shortenName()}</IonLabel>
                   <IonIcon icon={personCircle} size="large" />
                 </div>
               )}
@@ -208,10 +196,10 @@ const AppComponent: React.FC<AppProps> = props => {
         </div>
       </IonHeader>
       <IonContent>
-        { /*<RChainLogo className="BackgroundLogo" /> */ }
+        <RChainLogo className="BackgroundLogo" />
 
         {
-          (identity === "buyer") ? (
+          (identity) ? (
                   <Suspense fallback={<IonLoading isOpen={true} />}>
                     <PublicStore
                       registryUri={props.registryUri as string}
@@ -287,7 +275,6 @@ export const App = connect(
     return {
       authorised: state.reducer.authorised,
       registryUri: state.reducer.registryUri,
-      user: state.reducer.user,
       bags: state.reducer.bags,
       isLoading: state.reducer.isLoading,
     };

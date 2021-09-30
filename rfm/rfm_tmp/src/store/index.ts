@@ -27,6 +27,7 @@ export interface State {
   validatorUrl: string;
 
   // rchain-token contract
+  nonce: undefined | string;
   contractPublicKey: undefined | string;
   identities: { [pubKey: string]: string }; //Map of identities <pubkey, regUri>
   registryUri: undefined | string;
@@ -35,7 +36,7 @@ export interface State {
 
   // rchain-token bags and data
   bags: { [address: string]: Bag };
-  bagsData: { [address: string]: Folder };
+  bagsData: { [address: string]: Document };
 
   isLoading: boolean;
   searchText: string;
@@ -60,26 +61,21 @@ export interface Signature extends JWSSignature {
   payload: string;
   publicKey: string;
 }
-
-export interface Folder {
-  files: { [s: string]: Document },
-  signatures: { [s: string]: Signature };
-  scheme?: { [s: string]: string },
-  date: string;
-  mainFile: string;
-}
-
 export interface Document {
   name: string;
   mimeType: string;
   data: string;
+  signatures: { [s: string]: Signature };
+  date: string;
+  scheme?: { [s: string]: string }
   //parent?: string;
 }
 
 const initialState: State = {
   did: undefined,
-  readOnlyUrl: 'http://158.177.6.32:40403',
-  validatorUrl: 'http://158.177.6.32:40403',
+  readOnlyUrl: 'http://localhost:40403',
+  validatorUrl: 'http://localhost:40403',
+  nonce: undefined,
   contractPublicKey: undefined,
   identities: {},
   registryUri: undefined,
@@ -90,7 +86,7 @@ const initialState: State = {
   searchText: '',
   platform: '',
   authorised: false,
-  user: '',
+  user: ''
 };
 
 const reducer = (
@@ -126,6 +122,7 @@ const reducer = (
     case "INIT_COMPLETED": {
       return {
         ...state,
+        nonce: action.payload.nonce,
         contractPublicKey: action.payload.contractPublicKey,
       };
     }
@@ -264,15 +261,16 @@ export const getDocumentsCompleted = createSelector(
   (state: HistoryState) => state,
   (state: HistoryState) => {
     const bagsData = state.reducer.bagsData;
-    const documentsComplete: { [bagId: string]: Folder } = {};
+    const documentsComplete: { [bagId: string]: Document } = {};
     Object.keys(bagsData).forEach(bagId => {
-      const folder = bagsData[bagId];
+      const document = bagsData[bagId];
       if (
-        folder && folder.signatures && 
-        folder.signatures['0'] &&
-        folder.signatures['1']
+        document &&
+        document.signatures['0'] &&
+        document.signatures['1'] &&
+        document.signatures['2']
       ) {
-        documentsComplete[bagId] = folder;
+        documentsComplete[bagId] = document;
         return;
       }
     });
@@ -300,19 +298,28 @@ export const getDocumentsAwaitingSignature = createSelector(
   getBagsData,
   getPublicKey,
   (bagsData: HistoryState['reducer']['bagsData'], publicKey: HistoryState['reducer']['publicKey']) => {
-    const documentsAwaitingSignature: { [bagId: string]: Folder } = {};
+    const documentsAwaitingSignature: { [bagId: string]: Document } = {};
     Object.keys(bagsData).forEach(bagId => {
-      const folder = bagsData[bagId];
-
+      const document = bagsData[bagId];
       if (
-        folder && folder.signatures &&
-        folder.signatures['0'] &&
-        !folder.signatures['1'] &&
-        folder.signatures['0'].publicKey !== publicKey
+        document.signatures['0'] &&
+        !document.signatures['1'] &&
+        document.signatures['0'].publicKey !== publicKey
       ) {
-        documentsAwaitingSignature[bagId] = folder;
+        documentsAwaitingSignature[bagId] = document;
         return;
       }
+      /*
+      if (
+        document.signatures['0'] &&
+        document.signatures['1'] &&
+        !document.signatures['2'] &&
+        document.signatures['1'].publicKey !== publicKey
+      ) {
+        documentsAwaitingSignature[bagId] = document;
+        return;
+      }
+      */
     });
 
     return documentsAwaitingSignature;

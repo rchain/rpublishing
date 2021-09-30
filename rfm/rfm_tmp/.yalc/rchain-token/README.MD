@@ -1,161 +1,157 @@
-### Rholang (RChain) token
+### Rholang (RChain) token (v4)
 
-Fungibles and non-fungibles tokens on the RChain blockchain.
+**This is the #files branch/fork** of the standard rchain-token **[master](https://github.com/fabcotech/rchain-token)** branch. This one is tweeked to allow indexing bags by string instead of `0`, `1`, `2` etc. It can be used to represent files, as well as names in the dappy name system for example.
 
-This repo includes a CLI so you can very quickly start playing with rchain-token contract, and SDK that you can integrate in any javascript application. The code and architecture takes advantage of [rholang's](https://rchain.coop/) powerful model of computation, and state of the art OCAP (object capabilities) paradigm to manage authorizations.
+Except for the bags created with `"CREATE_TOKENS"` by the owner, all bags have `"quantity": 1`. Bag with ID `"0"` is special, it is the only one that when you purchase from it (you always purchase `"quantity": 1`), you can create an new bag with arbitrary ID, see `./purchase_tokens.rho`. Make sure you ALWAYS create a bag with ID `"0"` right after you deploy, fancy things could happen if you don't.
+
+Fungibles and non-fungibles tokens on the RChain blockchain. Includes buy/sell capabilities by default, metadata that can be associated to a token type (ex: pizza), or a specific set of tokens (pizza n°1021).
+
+This repo includes a CLI so you can very quickly start playing with rchain-token contract, and SDK that you can integrate in any javascript application.
 
 ![RChain token](https://i.ibb.co/qrnCwVp/rchaintoken.png)
 
-Object capabilities is a safe, no-encryption and flexible way to express ownership, permissions or authorizations. See or read about object capabilities [here](https://www.youtube.com/watch?v=EGX2I31OhBE), [here](https://www.youtube.com/watch?v=ZnBbi6ifzdo) or [here](http://erights.org/elib/capability/ode/ode-capabilities.html).
+**Note:** [MakeMint](https://github.com/rchain/rchain/blob/dev/casper/src/main/resources/MakeMint.rho) is a more straightforward, it uses [OCAP](http://erights.org/elib/capability/ode/index.html) instead of encryption/signatures. It is the contract used for REV, RChain's native currency. It does less, but more efficiently, consider checking it.
 
-### Use CLI
+### Using CLI
 
-Rename the `.env.example` file to `.env` and eventually update the values to connect to another RChain network than RChain testnet. You must also add your private key in `.env` file so it will not appear on the screen and command line history.
-
-```
-# Deploy a master contract, that handles both boxes and contracts
-node cli deploy-master
-```
-
-##### non-fungible tokens
-
-Non-fungibles (NFT) tokens are identified by an ID like "pikachu", "amazon" or "cat123". They are still represented by purses, all purses have `quantity: 1`, a NFT purse cannot be divided. Purse `"0"` is a special mint purse from which you can purchase, and give a `newId` of your choice (See `./tests-fungibles/index.js:L229`).
-
-As the owner, be very careful to only give `quantity: 1` when you create purses (except for special purse `"0"`).
+First rename the `.env.example` file to `.env` and eventually update the values to connect to another RChain network than RChain testnet. You must also add your private key in `.env` file so it will not appear on the screen and command line history.
 
 ```
-# the following steps assume you have already deployed a master contract
-
-# deploy a box that can store FTs, NFTs and super keys
-node cli deploy-box --box-id mybox
-
-# deploy contract and save super key to box
-node cli deploy --fungible false --contract-id "mynft"
-
-# create a non-fungible "cat123" token (quantity is always 1 for non-fungibles)
-node cli create-purse --quantity 1 --type "0" --new-id "cat123"
-
-# after the deployed is processed you can check that your purse is created
-node cli view
+# Deploy a new empty rchain-token contract
+node cli deploy
+# With default bags and/or data, see bags.example.json file
+node cli deploy --bags-file ./bags.json
 ```
 
-##### fungible tokens
+After having first deployed, `registry URI` and other values are logged to the console. `registry URI` is the identifier/location of the rchain-token contract on the blockchain.
 
-Fungibles tokens are identified mainly by the type property, purses can have a quantity superior to one. For examples 100 gold tokens, 1000 shares that can be exchanged, or any ERC-20 tokens will be fungible. The IDs of purses are automatically incremented (0, 1, 2 etc.), they do not matter that much.
-
-```
-# the following steps assume you have already deployed a master contract and a box
-
-# deploy contract and save super key to box
-node cli deploy --fungible true --contract-id "mytoken"
-
-# Create/mint a purse with 12 tokens "GOLD" using the admin/owner capability
-node cli create-purse --quantity 12 --type "GOLD"
-
-# In the same contract, you can create another purse with another type of tokens
-node cli create-purse --quantity 24 --type "SILVER"
-
-# after the deployed is processed you can check that your purse is created
-node cli view
-```
-
-##### CLI
+Aliases: You can use `-r` option instead of `--registry-uri`, you can also add a line `REGISTRY_URI=*` in `.env` file and do not provide this option at all, `node cli deploy` should add this line in `.env` file.
 
 **View**
 
 ```
-# Check the content of a box (super keys and purses)
-node cli view-box
+# Check contract's public key, nonce, locked true/false, and bags
+node cli view --registry-uri 6yt4
 ```
 
 ```
-# Check contract's locked (true/false), and purses
-node cli view
+# Check a specific bags in a contract
+node cli view --registry-uri 6yt4 --bag 0
 ```
 
 ```
-# Check a specific purse in a contract
-node cli view --purse 0
+# Check the data associated with a bag
+node cli view-data --registry-uri 6yt4 --bag 12
+# Check the data associated with a token
+node cli view-data --registry-uri 6yt4 --token 3
 ```
 
-**Purses/tokens operations**
+**Tokens/bags operations**
 
 ```
-# Send a purse from a box to another box
-CLI NOT IMPLEMENTED YET
+# Lock contract, no token will ever be created in this contract anymore
+node cli lock --registry-uri 6yt4 --contract-nonce daec
 ```
 
-##### Methods/operations available
-
-ro = Read only, it does not change the state of box or contract in any wey
-
-The methods prefixed with `PUBLIC_` are accessible by any rholang execution, the others are only available for the owners of a box or super key (contract), following the OCAP paradigm.
-
-###### Master
-
-All methods are public
-
 ```
-ro PUBLIC_READ_PURSES_AT_INDEX: (contractId: String, index: Int) => String | Map(purses at index)
-ro PUBLIC_READ_BOX: (boxId: String) => String | Map(box purses and config)
-ro PUBLIC_READ_PURSE: ({ contractId: String, purseId: String }) => Map(purses)
-ro PUBLIC_READ_PURSE_DATA: ({ contractId: String, purseId: String }) => Map(purses data)
-ro PUBLIC_READ_CONFIG: (contractId: String) => String | Map(contract config)
-PUBLIC_REGISTER_BOX: ({ boxId: String, publicKey: String }) => String | (true, box ocap object)
-PUBLIC_DELETE_EXPIRED_PURSE: (contractId: String, purseId: String) => String | (true, Nil)
+# Create tokens
+# If --token is not given, a new token id will be created
+# If --price is not given, the tokens won't be for sale
+# If make sure --new-bag is not an int like "0", "1", "2", "12", it could overide/mess up the contract because bags ID are incremental, choose rather "a", "b", "c"
+node cli create-tokens --registry-uri 6yt4 --contract-nonce daec --price 10 --quantity 3  --token 0 --new-bag a
 ```
 
-Check files in `./src` if you want to know how to get many purses, or all purses using the methods above.
-
-###### Box
-
-A box (OCAP) is usually stored in a private channel like `@(*deployerId, "rchain-token-box", "MASTER_REGISTRY_URI", "BOX_ID")`, see `op_deploy_box.rho` for example.
-
-All the methods on a box are private (owner of the box only).
-
 ```
-ro READ: () => Properties of the purse (quantity, price, box, publicKey, type)
-REGISTER_CONTRACT: ({ contractId: string, fungible: Bool, fee: Nil | (String, int) }) => String | (true, super key ocap object)
-UPDATE_PURSE_PRICE: ({ contractId: String, purseId: String, price: Nil | Int }) => String | (true, super key ocap object)
-UPDATE_PURSE_DATA:  ({ contractId: String, purseId: String, data: any }) => String | (true, super key ocap object)
-WITHDRAW:  ({ contractId: String, purseId: String, quantity: Int, toBoxId: String, merge: Bool }) => String | (true, Nil)
-PURCHASE:  ({ contractId: String, purseId: String, quantity: Int, merge: Bool, newId: String | Nil, data: any, purseRevAddr: String, purseRevAddr: VaultAuthKey }) => String | (true, Nil)
-RENEW:  ({ contractId: String, purseId: String, purseRevAddr: String, purseRevAddr: VaultAuthKey }) => String | (true, Nil)
+# Purchase tokens from a bag
+# If --price is not given, the tokens won't be for sale
+node cli purchase-tokens --registry-uri 6yt4  --price 100 --from-bag 0 --quantity 3
 ```
 
-###### Contract (super key)
-
-The ownership of a contract is expressed by the ownership of a super key that is returned by `REGISTER_CONTRACT` method. A contract's super key (OCAP) is usually stored in a private channel like `@(*deployerId, "rchain-token-contract", "MASTER_REGISTRY_URI", "CONTRACT_ID")`, see `op_deploy.rho` for example.
-
-All the methods on a super key are private (deployer of the contract only).
-
 ```
-LOCK: () => String | (true, Nil) // cannot CREATE_PURSE anymore after a contract is locked
-CREATE_PURSE: see `cli/createPurse.js` or `src/createPursesTerm`.
+# Send tokens, which is equal to splitting a bag into two bags
+# --nonce is the bag nonce, not the contract nonce
+node cli send-tokens --registry-uri 6yt4 --nonce 1f4c --from-bag 0 --quantity 7 --public-key aaa
 ```
 
-##### Using SDK
+**Data operations**
+
+```
+# Update data associated with a token
+node cli update-token-data --registry-uri 6yt4 --file ./README.MD --contract-nonce daec --token 0
+```
+
+```
+# Update data associated with a bag
+# --nonce is the bag nonce, not the contract nonce
+node cli update-token-data --registry-uri 6yt4 --file ./README.MD --nonce 1f4c --bag 0
+```
+
+Missing in CLI: playing with token data and bag data, changing price of a bag of tokens
+
+### Using SDK
 
 The SDK files are in `./src`, if you have rchain-token (`fabcotech/rchain-token`) as a dependency of your project, you should be able to use them very easily.
 
 ```
 import {
-  masterTerm,
+  mainTerm,
 } from "rchain-token";
+const uuidv4 = require("uuid/v4");
 
-const rholangTerm = masterTerm({
-  depth: 3,
-  contractDepth: 2,
-})
+const publicKey = 'aaa';
+const nonce = uuidv4().replace(/-/g, "");
+const rholangTerm = mainTerm(
+  nonce,
+  publicKey
+)
 ```
 
-##### Compile rholang -> javascript (src/)
+Missing in CLI: changing price of a bag of tokens
 
-\_Generate all javascript source code in `src/` from rholang with `npm run generate`
+### Compile rholang -> javascript (src/)
 
-##### Testing
+\_Generate all javascript source code in `src/` from rholang with `node generateJavascripts.js`
 
-Have a local rnode instance running with the following bonds and wallets file. And automatic propose every x seconds. The private keys used for deployments are in `tests-ft/index.js` and `tests-nft/index.js`.
+### Token representation on chain
+
+3 channels contains every data that is needed :
+
+- `bags` : map indexed per bag ID, a bag can contain 0, 1, 1000 or more tokens. Many bag may point to the same token type (= token ID).
+- `tokensData` : map containing the data associated with each token, it can be anything, depending on the usecase (JSON, images, files etc...), example: `{ "model": "Peugeot 308" }`. The owner of a bag _cannot_ change the data associated to the token.
+- `bagsData` : map containing the data associated with each bag (a bag is a token ownership), it can be anything, depending on the usecase (JSON, images, files etc...), example: `{ "color": "red" }`. The owner of a bag _is the only person who can_ change the data associated to the bag.
+- `mainCh` : map that contains data about this contract : `registryUri`, unique `nonce` that is changed each time an admin action is performed, `publicKey` of the owner (person who can lock and create tokens), `locked` boolean.
+
+### Authentication and property in rholang
+
+rchain-token does not follow OCAP standards, the ownership is expressed by the possibility to sign a payload that will change a bag (`bagCh`), bag data (`bagDataCh`) or token data (`tokenDataCh`). The authentication is therefore signature + encryption based and not unforgeable names based.
+
+The typical authentication is that a signature of (payload + existing nonce) must be provided, if the operation is a owner operation (see below) then the nonce is the contract nonce (in mainCh), if it is a normale operation, the nonce is the bag nonce.
+
+### Methods exposed
+
+Through the `entry` channel that is exposed to the registry, any user can interact with this contract, you can just check the other `.rho` files of this repository to see what's possible .
+
+- `CREATE_TOKENS` (owner only) : at anytime, the owner can create some more tokens, see `create_token.rho`.
+- `SET_LOCKED` (owner only): the owner (person who initially deploy) can create tokens, and set the locked value. Once he locks the contract, he has no specific right or power over it, the contract is left to itself. The total tokens amount won't change anymore, the tokens data cannot be changed anymore, it is basically a free market, people can set a price for a token, sell and buy them, see `set_locked.rho`.
+- `UPDATE_TOKEN_DATA`(owner only and not locked): Update the data associated with a token (not a bag).
+- `PURCHASE_TOKENS` : any user can purchase a token that has a quantity superior to one, see `purchase_token.rho`.
+- `SEND_TOKENS` : any user can send tokens he owns to another public key. This will split a bag into two bags, it can also be the same public key, eventually to sell just a portion of tokens.
+- `UPDATE_BAG_DATA`: Any user who owns tokens can update the data associated with this bag.
+- `READ` : reads the value in `mainCh` and returns it, see `set_locked.rho`.
+- `READ_TOKENS` : reads the value in `tokens` and returns it, see `read_tokens.rho`.
+- `READ_TOKENS_DATA` : reads the value in `tokensData` and returns it, see `read_tokens_data.rho`.
+
+### Compile for browser and dappy browser
+
+Change version in `src/index.js` and in `rollup.config.js`.
+
+```
+npm run build:browser
+```
+
+### Testing
+
+Have a local rnode instance running with the following bonds and wallets file. And automatic propose every x seconds. The private keys used for deployments are in `tests/index.js`.
 
 wallets.txt
 
@@ -177,22 +173,15 @@ READ_ONLY_HOST=http://127.0.0.1:40403
 VALIDATOR_HOST=http://127.0.0.1:40403
 ```
 
-`npm run test:ft`
-`npm run test:nft`
+`npm run test`
 
-##### Stressing
+### TODO
 
-Many stress tests exist, see `stress/stress_*` files, you might want to change the variables on the top of each file.
+- Exchange capabilities
 
-example:
-
-```
-node stress/stress_createPurses.js
-node stress/stress_createPursesAndReadAll.js
-```
-
-#### Dappy name system
-
-The dappy name system uses a rchain-token NFT contract. By default some purseswill be reserved, probably the top 3000 or top 5000 domain names. The list can be found on this page [amazonaws.com/umbrella-static/index.html](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html)
-
-Top ever domain sales [alter.com/blog/top-domain-name-sales](https://alter.com/blog/top-domain-name-sales)
+  "askPublicKey": "aaa",
+  "OfferPublicKey": "bbb",
+  "uniqueIdAsk": [{ "amount": 4, "n": "3" }]
+  "uniqueIdOffer": [{ "amount": 1, "uniqueId": "3" }],
+  "sellerSignature": "aaa",
+  "buyerSignature": "bbbb"

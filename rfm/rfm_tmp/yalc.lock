@@ -1,13 +1,17 @@
 {
   "version": "v1",
   "packages": {
+    "dids": {
+      "signature": "6fbbe4493ece51bc248c1aa65dec6a1d",
+      "file": true
+    },
     "rchain-did-resolver": {
-<<<<<<< HEAD
-      "version": "2.1.2",
-      "signature": "82311ff827ea528967924cfbb8af2d6a",
-=======
-      "signature": "c9473c498d28541016a06095b686d4fc",
->>>>>>> 48ddb4f1e53d074e9ea95cd2153164719e88b7f8
+      "signature": "58470c52a1afba22b3cd142fa8016f5e",
+      "file": true,
+      "replaced": "https://github.com/TheoXD/rchain-did-resolver.git"
+    },
+    "rchain-token": {
+      "signature": "f3463dad679697c6eba90e9024c919fc",
       "file": true
     }
   }

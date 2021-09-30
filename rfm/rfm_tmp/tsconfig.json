@@ -20,7 +20,6 @@
     "noEmit": true,
     "jsx": "react",
     "baseUrl": ".",
-    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"

@@ -188,22 +188,25 @@ describe('resolver', () => {
         new Error('Invalid DID did:borg:')
       )
     })
+
     /*
     it('resolves rchain did', async () => {
       await expect(
         resolver.resolve(
-          'did:rchain:5tz91pxmj1tn83faq356x9ey17y59gijuk646fowp8bc5kaama7k78'
+          'did:rchain:7ezuxgxi6e1exfwwtbeye3utd9i9ichun64eyfh44rx63a7yp9yceu'
         )
       ).resolves.toBeTruthy()
     })
+
     it('resolves rchain document', async () => {
       await expect(
         resolver.resolve(
-          'did:rchain:5tz91pxmj1tn83faq356x9ey17y59gijuk646fowp8bc5kaama7k78/publisher'
+          'did:rchain:7ezuxgxi6e1exfwwtbeye3utd9i9ichun64eyfh44rx63a7yp9yceu/samplepdf'
         )
       ).resolves.toBeTruthy()
     })
     */
+
     it('resolves did document', async () => {
       await expect(resolver.resolve('did:example:123456789')).resolves.toEqual({
         '@context': 'https://w3id.org/did/v1',

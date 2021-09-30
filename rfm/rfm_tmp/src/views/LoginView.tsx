@@ -30,14 +30,12 @@ interface LoginViewProps {
     privateKey: string;
     platform: string;
     user: string;
-    store: string;
   }) => void;
 }
 const LoginViewComponent: React.FC<LoginViewProps> = props => {
 
   const handlePublisherLogin = async() => {
-    //localStorage.removeItem('user');
-    localStorage.setItem('user', 'publisher');
+    localStorage.removeItem('user');
     localStorage.setItem('publisher', 'true')
   
     props.init({
@@ -45,22 +43,19 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
       privateKey:
         Users.publisher.PRIVATE_KEY,
       platform: props.platform,
-      user: 'publisher',
-      store: "store"
+      user: 'publisher'
     });
   }
 
   const handleAttestorLogin = async () => {
-    //localStorage.removeItem('user');
+    localStorage.removeItem('user');
     localStorage.removeItem('publisher');
-    localStorage.setItem('user', 'attestor');
 
     props.init({
       registryUri: Users.attestor.REGISTRY_URI,
       privateKey: Users.attestor.PRIVATE_KEY,
       platform: props.platform,
       user: 'attestor',
-      store: "store"
     });
   };
 
@@ -69,11 +64,10 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
     localStorage.removeItem('wallet');
 
     props.init({
-      registryUri: Users.buyer.REGISTRY_URI,
-      privateKey: Users.buyer.PRIVATE_KEY,
+      registryUri: Users.publisher.REGISTRY_URI,
+      privateKey: Users.publisher.PRIVATE_KEY,
       platform: props.platform,
-      user: 'publisher',
-      store: "public_store"
+      user: 'buyer'
     });
   }
 
@@ -86,7 +80,6 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
        privateKey: Users.buyer.PRIVATE_KEY,
        platform: props.platform,
        user: 'buyer',
-       store: "public_store"
      });
    };
 
@@ -159,8 +152,7 @@ export const LoginView = connect(
         registryUri: string;
         privateKey: string;
         platform: string;
-        user: string;
-        store: string;
+        user: string
       }) => {
         dispatch({
           type: 'INIT',
@@ -172,8 +164,7 @@ export const LoginView = connect(
               a.privateKey as string
             ),
             registryUri: a.registryUri,
-            user: a.user,
-            store: a.store
+            user: a.user
           },
         });
       },

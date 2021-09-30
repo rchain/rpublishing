@@ -1,49 +1,28 @@
-// rholang terms
-const { deployBoxTerm } = require('./deployBoxTerm');
-const { masterTerm } = require('./masterTerm');
-const { deployTerm } = require('./deployTerm');
-const { createPursesTerm } = require('./createPursesTerm');
-const { lockTerm } = require('./lockTerm');
-const { deleteExpiredPurseTerm } = require('./deleteExpiredPurseTerm');
-const { readPursesTerm } = require('./readPursesTerm');
-const { readAllPursesTerm } = require('./readAllPursesTerm');
-const { readBoxTerm } = require('./readBoxTerm');
-const { readConfigTerm } = require('./readConfigTerm');
-const { updatePurseDataTerm } = require('./updatePurseDataTerm');
-const { readPursesDataTerm } = require('./readPursesDataTerm');
-const { updatePursePriceTerm } = require('./updatePursePriceTerm');
-const { renewTerm } = require('./renewTerm');
-const { purchaseTerm } = require('./purchaseTerm');
-const { purchaseAndWithdrawTerm } = require('./purchaseAndWithdrawTerm');
-const { withdrawTerm } = require('./withdrawTerm');
-
-// utils
-const { decodePurses } = require('./decodePurses');
-
-const { VERSION } = require('../constants');
+const { mainTerm } = require("./mainTerm");
+const { createTokensTerm } = require("./createTokensTerm");
+const { purchaseTokensTerm } = require("./purchaseTokensTerm");
+const { sendTokensTerm } = require("./sendTokensTerm");
+const { setLockedTerm } = require("./setLockedTerm");
+const { updateTokenDataTerm } = require("./updateTokenDataTerm");
+const { updateBagDataTerm } = require("./updateBagDataTerm");
+const { readBagOrTokenDataTerm } = require("./readBagOrTokenDataTerm");
+const { readBagsOrTokensDataTerm } = require("./readBagsOrTokensDataTerm");
+const { read } = require("./read");
+const { readBagsTerm } = require("./readBagsTerm");
+const { changePriceTerm } = require("./changePriceTerm");
 
 module.exports = {
-  version: VERSION,
-
-  masterTerm,
-  deployBoxTerm,
-  deployTerm,
-  createPursesTerm,
-  lockTerm,
-  deleteExpiredPurseTerm,
-  updatePurseDataTerm,
-  updatePursePriceTerm,
-  purchaseTerm,
-  renewTerm,
-  withdrawTerm,
-  purchaseAndWithdrawTerm,
-
-  readPursesTerm,
-  readAllPursesTerm,
-  readBoxTerm,
-  readConfigTerm,
-  readPursesDataTerm,
-
-  // utils
-  decodePurses,
+  version: '4.0.0',
+  mainTerm,
+  createTokensTerm,
+  purchaseTokensTerm,
+  sendTokensTerm,
+  setLockedTerm,
+  updateTokenDataTerm,
+  updateBagDataTerm,
+  readBagOrTokenDataTerm,
+  readBagsOrTokensDataTerm,
+  read,
+  readBagsTerm,
+  changePriceTerm,
 };

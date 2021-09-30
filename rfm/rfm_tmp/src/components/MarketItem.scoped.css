@@ -29,22 +29,19 @@ ion-icon {
 .mainContainer {
   display: flex;
   flex-direction: column;
-  border: 1px solid #CBC9C9;
-  border-radius: 10px;
 }
 
 .labelContainer {
-  margin-left: 15px;
+  margin-left: 10px;
   display: flex;
   flex-direction: row;
-  padding: 5px 50px 5px 5px;
+  padding: 5px 5px 5px 5px;
 }
 
-/* ion-label {
+ion-label {
   margin-top: 12px;
   margin-bottom: 12px;
-} */
-
+}
 
 ion-item h2 {
   font-weight: 600;
@@ -80,28 +77,6 @@ ion-item ion-note.md {
 
 .IconContainer {
   margin: 1em;
-  display: flex;
-}
-
-.ImageFrame {
-  padding: 0.6em;
-  min-width: 8em;
-  max-width: 16em;
-}
-
-.ImageFrame.main {
-  padding: 0.6em;
-  min-width: 12em;
-  max-width: 22em;
-}
-
-.Image {
-  border-style: solid;
-  border-width: 0.4em;
-  border-color: #2c2c2c;
-  padding: 0.4em;
-  background: #e1e1e1;
-  box-shadow: 2px 4px 3px rgb(0 0 0 / 53%), 0 1px 2px rgb(0 0 0 / 25%);
 }
 
 .ion-text-wrap {
@@ -113,7 +88,7 @@ ion-footer ion-title {
   font-weight: normal;
 }
 
-ion-button {
+ion-button.AddButton {
   border-radius: 5px;
   border-color: var(--ion-color-primary);
   --box-shadow: none;
@@ -126,8 +101,4 @@ ion-button {
 .signature-ok {
   color: #4b5;
   margin-left: 5px;
-}
-
-.secondary {
-  display: none;
 }

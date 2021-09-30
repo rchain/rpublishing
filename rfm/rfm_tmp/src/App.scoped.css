@@ -1,7 +1,5 @@
 .main-title {
   font-weight: 600;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
 }
 
 .BackgroundLogo {
@@ -10,8 +8,4 @@
   position: absolute;
   pointer-events: none;
   overflow-y: none;
-}
-
-ion-toolbar {
-  margin-bottom: 20px;
 }
