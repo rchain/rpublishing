@@ -11,21 +11,24 @@ import { DID } from 'dids';
 import { encodeBase64 } from 'dids/lib/utils';
 import { parse } from 'did-resolver';
 
-import { Document, store } from '../';
+import { Folder, store } from '../';
 import replacer from '../../utils/replacer';
 import { getPrivateKey, HistoryState } from '../index';
 
-const { purchaseTokensTerm } = require('rchain-token');
+const { createPursesTerm } = require('rchain-token');
+
 
 const uploadBagData = function*(action: {
   type: string;
-  payload: { document: Document; bagId: string; recipient: string; price: number };
+  payload: { folder: Folder; bagId: string; recipient: string; price: number, mainFile: string };
 }) {
   console.log('upload-bag-data', action.payload);
-  let repipient =
-    'did:rchain:h44woki98qcuwhj3pxu131czudxtnznxqo6fxtpiyco9wahu1q3c4y';
-  const document = action.payload.document;
+  let recipient = action.payload.recipient;
+  const folder = action.payload.folder;
+  const newBagId = action.payload.bagId;
   const state: HistoryState = store.getState();
+
+  console.log(state);
 
   const publicKey = state.reducer.publicKey;
   const privateKey = yield getPrivateKey(state);
@@ -38,55 +41,65 @@ const uploadBagData = function*(action: {
 
   yield did.authenticate({ provider: provider });
 
-  if (!repipient) {
-    repipient = 'did:rchain:' + state.reducer.registryUri;
+  let recipientDid;
+  if (recipient) {
+    recipientDid = 'did:rchain:' + state.reducer.registryUri + "/" + recipient;
+  } else {
+    recipientDid = 'did:rchain:' + state.reducer.registryUri + "/" + state.reducer.user;
   }
 
+
   const fileDocument = {
-    mimeType: document.mimeType,
-    name: document.name,
-    data: document.data,
-    signatures: document.signatures,
-    date: document.date,
+    files: folder.files,
+    signatures: folder.signatures,
+    date: folder.date,
     scheme: {
-      '0': repipient,
-      '1': 'did:rchain:' + state.reducer.registryUri,
+      '0': recipientDid,
+      '1': 'did:rchain:' + state.reducer.registryUri + "/" + state.reducer.user
     },
-  } as Document;
+    mainFile: action.payload.mainFile || Object.keys(folder.files)[0]
+  } as Folder;
+
 
   const { jws, linkedBlock } = yield did.createDagJWS(fileDocument);
+  
   const jwe = yield did.createDagJWE(
     { jws: jws, data: encodeBase64(linkedBlock) },
-    [repipient],
+    [recipientDid],
     {
       protectedHeader: {
         alg: 'A256GCMKW',
       },
     }
   );
-
+  
   const stringifiedJws = JSON.stringify(jwe, replacer);
   const deflatedJws = deflate(stringifiedJws);
   const gzipped = Buffer.from(deflatedJws).toString('base64');
 
   const payload = {
-    publicKey: publicKey,
-    newBagId: action.payload.bagId,
-    bagId: '0',
-    quantity: 1,
-    price: 1,
-    bagNonce: v4().replace(/-/g, ''),
-    data: gzipped,
+    purses: {
+      [newBagId]: {
+        id: newBagId,
+        boxId: recipient,
+        type: '0',
+        quantity: 1,
+        price: null,
+      }
+    },
+    data: {
+      [newBagId]: gzipped
+    },
+    masterRegistryUri: state.reducer.registryUri,
+    contractId: "store",
+    boxId: state.reducer.user,
   };
 
   localStorage.setItem('price', JSON.stringify(action.payload.price));
 
   did.deauthenticate();
-
-  const parsedDid = parse(repipient);
-  const addr = parsedDid.id;
-  const term = purchaseTokensTerm(addr, payload);
-  console.log(term);
+  
+  const term = createPursesTerm(payload);
 
   let validAfterBlockNumberResponse;
   try {
@@ -111,8 +124,19 @@ const uploadBagData = function*(action: {
     4000000000,
     validAfterBlockNumberResponse
   );
-  yield rchainToolkit.http.deploy(state.reducer.validatorUrl, deployOptions);
+  
 
+  try {
+    const deployResponse = yield rchainToolkit.http.deploy(state.reducer.validatorUrl, deployOptions);
+    if (!deployResponse.startsWith('"Success!')) {
+      console.log(deployResponse);
+    }
+  }
+  catch(err) {
+    console.info("Unable to deploy");
+    console.error(err);
+  }
+  
   yield put({
     type: 'PURCHASE_BAG_COMPLETED',
     payload: {},
