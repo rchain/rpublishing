@@ -15,8 +15,7 @@ import {
   IonIcon,
   IonSlides,
   IonSlide,
-  IonLabel,
-  IonSpinner
+  IonLabel
 } from '@ionic/react';
 import './App.scss';
 import './App.scoped.css';
