@@ -108,7 +108,7 @@ const PublicStoreComponent: React.FC<PublicDocumentView> = props => {
         </div>
       )}
       <IonContent>
-        {props.platform !== 'web' ? (
+        {props.platform !== 'web' && false ? (
           <IonFab vertical="bottom" horizontal="end" slot="fixed">
             <IonFabButton color="tertiary" onClick={scanQRCode}>
               <IonIcon icon={qrCode} />
