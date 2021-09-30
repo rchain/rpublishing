@@ -8,9 +8,9 @@ http://ionicframework.com/docs/theming/ */
    */
 
   body {
-    --ion-text-color: #000;
+    --ion-text-color: #04111d;
     /** primary **/
-    --ion-color-primary: #000000;
+    --ion-color-primary: #04111d;
     --ion-color-primary-rgb: 0, 0, 0;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;

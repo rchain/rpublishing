@@ -83,6 +83,12 @@ const AppComponent: React.FC<AppProps> = props => {
     });
   };
 
+  function reload() {
+    setTimeout(() => {
+    window.location.reload();
+  }, 100);
+  }
+
 
   if (!props.authorised) {
     return (
@@ -152,7 +158,11 @@ const AppComponent: React.FC<AppProps> = props => {
       <img className="EveSignature" src={Eve} alt="Eve Arnold" />
       <IonHeader no-border no-shadow className="ion-no-border">
         <IonToolbar className="noSafeAreaPaddingTop">
-          <IonTitle className="main-title">Arnold NFT</IonTitle>
+          <IonTitle className="main-title" 
+            onClick={() => {
+           reload()
+          }}
+          >Arnold NFT</IonTitle>
           <IonButton
             slot="end"
             icon-only
