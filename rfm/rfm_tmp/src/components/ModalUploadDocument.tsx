@@ -48,7 +48,6 @@ interface ModalUploadDocumentProps extends RouteComponentProps {
   bags: { [bagId: string]: Bag };
   upload: (bagId: string, folder: Folder, did: string, files: any/*, price: string*/) => void;
   platform: string;
-  user: string;
   //recipient: string;
 }
 interface ModalUploadDocumentState {
@@ -368,7 +367,6 @@ class ModalUploadDocumentComponent extends React.Component<
               >
                 Upload
               </IonButton>
-              { /*
               <IonButton
                 className="AddButton"
                 onClick={() => {
@@ -377,7 +375,6 @@ class ModalUploadDocumentComponent extends React.Component<
               >
                 Cancel
               </IonButton>
-              */ }
             </IonItem>
           ) : (
             undefined
@@ -396,7 +393,6 @@ const ModalUploadDocument = connect(
       bagsData: getBagsData(state),
       publicKey: getPublicKey(state) as string,
       platform: getPlatform(state),
-      user: state.reducer.user
     };
   },
   (dispatch: Dispatch) => {

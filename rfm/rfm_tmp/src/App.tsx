@@ -83,6 +83,12 @@ const AppComponent: React.FC<AppProps> = props => {
     });
   };
 
+  function reload() {
+    setTimeout(() => {
+    window.location.reload();
+  }, 100);
+  }
+
 
   if (!props.authorised) {
     return (
@@ -152,7 +158,11 @@ const AppComponent: React.FC<AppProps> = props => {
       
       <IonHeader no-border no-shadow className="ion-no-border">
         <IonToolbar className="noSafeAreaPaddingTop">
-          <IonTitle className="main-title">RChain NFT</IonTitle>
+          <IonTitle className="main-title" 
+            onClick={() => {
+           reload()
+          }}
+          >RChain NFT</IonTitle>
           <IonButton
             slot="end"
             icon-only
