@@ -86,12 +86,12 @@ const AppComponent: React.FC<AppProps> = props => {
     }
 
     setDemo({
-      id: "7",
-      masterRegistryUri: "a7rwmq71ahtkb7t113b9fbcqgwbweytrsg4c7u6cg5b7h8auq836ym",
-      publisherPrivKey: "14e093e651f40a4d21ba4cbde9dd7f3c708cef83eb9ddf2500c40eddff11401c",
-      attestorPrivKey: "15e5a32669566b265d53797eeb6233b6c3166b95ea00fc35075b552d71bbcceb",
-      alicePrivKey: "5ab34f5697df1b1317c87f4ab4d2c461f417b74c6b3d2d08aa1502b9512c178b",
-      bobPrivKey: "8d2e12f30ac04de46e6b15da46fbd67a2a266c231ea83a2f121b0f46215e12f9"
+      id: "4",
+      masterRegistryUri: "nkpck3fsfiy5cyk4a1z1kzhafgo4gbcrw87hk8pq8he6jgarhsp9fa",
+      publisherPrivKey: "bf3570f06e372531efc593aafe285b2d62e37d5a7e5fd0ddf79529e0c51d4733",
+      attestorPrivKey: "bc16d755140a26889901c6b787a31be52f404ff8edb2160b0de448f2cbb3af8d",
+      alicePrivKey: "66a54df9b639784d6cac0ac927fa6b6b86aba8fe3334efebc2be80df6ada5140",
+      bobPrivKey: "9a1be4377b43734c2829512c2be4cc3ad976b396ddabb2eed7e10eeac2394089"
     });
     /*
       const existingDemo = localStorage.getItem('demo');
