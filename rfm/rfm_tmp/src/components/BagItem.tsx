@@ -36,6 +36,8 @@ const BagItemComponent: React.FC<BagItemProps> = ({
   bag
 }) => {
   const history = useHistory();
+  const publisher = localStorage.getItem('publisher');
+  console.log(awaitsSignature);
   return (
     <IonItemSliding className="container">
       <IonItemOptions side="end">
@@ -53,7 +55,11 @@ const BagItemComponent: React.FC<BagItemProps> = ({
         </IonItemOption>
       </IonItemOptions>
       <IonItem
-        className={`${(!onlyCompleted && Object.keys(folder.signatures).length > 1) ? 'with-parent' : ''} ${completed ? 'success' : 'secondary'}`}
+        className={`${
+          !onlyCompleted && Object.keys(folder.signatures).length > 1
+            ? 'with-parent'
+            : ''
+        } ${completed ? 'success' : 'secondary'}`}
         detail={false}
         button
         onClick={() => {
@@ -61,15 +67,23 @@ const BagItemComponent: React.FC<BagItemProps> = ({
         }}
       >
         <div className="IconContainer">
-          <IonIcon icon={documentIcon} color={completed ? 'success' : 'primary'} size="large" />
+          <IonIcon
+            icon={documentIcon}
+            color={completed ? 'success' : 'primary'}
+            size="large"
+          />
         </div>
         <IonLabel className="ion-text-wrap">
           <h2>{bagIdFromAddress(id)}</h2>
         </IonLabel>
-        {awaitsSignature && (
-          <IonButton className="AddButton">
-            Needs attestation
-          </IonButton>
+        {!publisher ? (
+          !awaitsSignature ? (
+            <IonButton className="AddButton">Needs attestation</IonButton>
+          ) : (
+            <IonButton className="AddButton">already attested</IonButton>
+          )
+        ) : (
+          undefined
         )}
       </IonItem>
     </IonItemSliding>

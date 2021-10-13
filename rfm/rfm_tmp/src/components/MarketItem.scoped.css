@@ -1,6 +1,7 @@
 ion-item-sliding.container {
   overflow: visible;
-  background: var(--ion-color-dark-tint);
+  background: var(--ion-color-light);
+
 }
 ion-item {
   --padding-start: 0;

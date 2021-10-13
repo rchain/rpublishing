@@ -101,7 +101,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
               <div className="container">
                 {/* Publisher */}
                 <div className="LoadButtonDiv">
-                  <IonButton
+                  <IonButton className="btn"
                     onClick={async () => {
                       handlePublisherLogin();
                     }}
@@ -112,6 +112,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 {/* Attestor */}
                 <div className="LoadButtonDiv">
                   <IonButton
+                    className="btn"
                     onClick={async () => {
                       handleAttestorLogin();
                     }}
@@ -122,6 +123,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 {/* Buyer */}
                 <div className="LoadButtonDiv">
                   <IonButton
+                    className="btn"
                     onClick={async () => {
                       handleStoreLogin();
                     }}
@@ -132,6 +134,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
                 {/* wallet*/}
                 <div className="LoadButtonDiv">
                   <IonButton
+                    className="btn"
                     onClick={async () => {
                       handleUserLogin();
                     }}

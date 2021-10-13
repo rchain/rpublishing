@@ -27,7 +27,7 @@ h3 {
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 1.5rem;
-  color: var(--ion-color-light-tint);
+  color: var(--ion-text-color);
   font-family: 'Poppins', sans-serif;
 }
 
@@ -37,7 +37,7 @@ h3 {
 }
 
 .label {
-  color: var(--ion-color-light-tint);
+  color: var(--ion-text-color);
   font-family: 'Poppins', sans-serif;
 }
 
@@ -53,14 +53,14 @@ ion-button.AddButton {
   border-radius: 5px;
   border-color: var(--ion-color-primary);
   --box-shadow: none;
-  color: var(--ion-background-color);
+  color: var(--ion-color-light);
   margin: auto;
   margin-right: 5px;
   background: var(--ion-color-primary);
 }
 
 .custom-radio {
-  color: var(--ion-color-light-tint);
+  color: var(--ion-text-color);
   font-family: 'Poppins', sans-serif;
 }
 
@@ -70,7 +70,7 @@ ion-button.AddButton {
 }
 
 .description {
-  color: var(--ion-color-light-tint);
+  color: var(--ion-text-color);
 }
 
 .drop-area {

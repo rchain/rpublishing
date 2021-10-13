@@ -5,7 +5,7 @@ http://ionicframework.com/docs/theming/ */
 :root {
   --ion-text-color: #04111d;
   --ion-main-header-bg: #04111d;
-  --ion-main-header-color: #fff;
+  --ion-main-header-color: #121212;
 
   /** primary **/
   --ion-color-primary: #04111d;
@@ -80,4 +80,10 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-tint: #f5f6f9;
 
   --ion-background-color: white;
+
+  --ion-font-family: 'Poppins', sans-serif;
+
+  --ion-toolbar-background: #1f1f1f;
+
+  --ion-tab-bar-background: #1f1f1f;
 }

@@ -161,7 +161,7 @@ const AppComponent: React.FC<AppProps> = props => {
             onClick={() => {
            reload()
           }}
-          >RChain NFT</IonTitle>
+          >RChain Publishing</IonTitle>
           <IonButton
             slot="end"
             icon-only
