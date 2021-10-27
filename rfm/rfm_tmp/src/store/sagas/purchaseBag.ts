@@ -1,26 +1,26 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import * as rchainToolkit from 'rchain-toolkit';
-import { deflate } from 'pako';
-import { v4 } from 'uuid';
+//import { deflate } from 'pako';
+//import { v4 } from 'uuid';
 import Swal from 'sweetalert2';
 
 import KeyResolver from 'key-did-resolver';
 import { getResolver as getRchainResolver } from 'rchain-did-resolver';
 import { Secp256k1Provider } from 'key-did-provider-secp256k1';
 import { DID } from 'dids';
-import { parse } from 'did-resolver';
-import { encodeBase64 } from 'dids/lib/utils';
+//import { parse } from 'did-resolver';
+//import { encodeBase64 } from 'dids/lib/utils';
 
-import { Folder, store, getBagsData } from '../';
-import replacer from '../../utils/replacer';
+import { store, getBagsData } from '../';
+//import replacer from '../../utils/replacer';
 import { getPrivateKey, HistoryState } from '../index';
-import { Users } from '../../users/users';
+//import { Users } from '../../users/users';
 
 const { purchaseTerm, readPursesDataTerm } = require('rchain-token');
 
 const purchaseBag = function*(action: {
   type: string;
-  payload: { bagId: string; registryUri: string, price: number };
+  payload: { bagId: string; registryUri: string, price: number, step: string };
 }) {
   console.log('purchase-bag', action.payload);
   const state: HistoryState = store.getState();
@@ -148,6 +148,7 @@ const purchaseBag = function*(action: {
     }
     setTimeout(() => { notify() }, 15000);
 
+    localStorage.setItem('tour', action.payload.step);
     setTimeout(() => {
       window.location.reload();
     }, 15000);

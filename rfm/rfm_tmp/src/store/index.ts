@@ -13,9 +13,8 @@ import { RouterState } from 'connected-react-router';
 
 import {
   FingerprintAIO,
-  FingerprintOptions
+  //FingerprintOptions
 } from "@ionic-native/fingerprint-aio/";
-import { rejects } from 'assert';
 
 import { DID, JWSSignature } from 'dids';
 
@@ -52,9 +51,12 @@ export type HistoryState = CombinedState<{
 
 export interface Bag {
   n: string;
+  id: string;
   quantity: number;
   price: undefined | number;
   publicKey: string;
+  timestamp: number;
+  boxId: string;
 }
 export interface Signature extends JWSSignature {
   payload: string;
@@ -78,8 +80,8 @@ export interface Document {
 
 const initialState: State = {
   did: undefined,
-  readOnlyUrl: 'http://158.177.13.133:40403',
-  validatorUrl: 'http://158.177.13.133:40403',
+  readOnlyUrl: 'https://gracious-pare-6c4c99.netlify.app',
+  validatorUrl: 'https://gracious-pare-6c4c99.netlify.app',
   contractPublicKey: undefined,
   identities: {},
   registryUri: undefined,

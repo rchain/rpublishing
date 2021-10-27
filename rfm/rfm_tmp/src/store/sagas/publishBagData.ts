@@ -7,7 +7,7 @@ import KeyResolver from 'key-did-resolver';
 import { getResolver as getRchainResolver } from 'rchain-did-resolver';
 import { Secp256k1Provider } from 'key-did-provider-secp256k1';
 import { DID } from 'dids';
-import { parse } from 'did-resolver';
+//import { parse } from 'did-resolver';
 import { encodeBase64 } from 'dids/lib/utils';
 
 import { Folder, store, getBagsData } from '../';
@@ -133,6 +133,7 @@ const publishBagData = function*(action: {
     }
     setTimeout(() => { notify() }, 15000);
 
+  localStorage.setItem('tour', '3');
   setTimeout(() => {
     window.location.reload();
   }, 15000);

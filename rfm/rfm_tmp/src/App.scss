@@ -196,3 +196,27 @@ ion-button.with-border {
   color: #fff;
   font-weight: lighter;
 }
+
+ionic-selectable {
+  color: black;
+}
+
+ionic-selectable-modal {
+  color: black;
+  --color: black;
+}
+
+
+ionic-selectable-modal ion-label.sc-ionic-selectable-modal-md {
+  color: black !important;
+}
+
+ionic-selectable-modal ion-icon.sc-ionic-selectable-modal-md {
+  color: black !important;
+  --color: black !important;
+}
+
+div.reactour__popover {
+  color: black;
+  border-radius: 1em;
+}

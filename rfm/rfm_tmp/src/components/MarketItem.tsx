@@ -1,37 +1,47 @@
 import { connect } from 'react-redux';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   IonIcon,
-  IonItem,
+  IonGrid,
+  IonRow,
+  //IonItem,
   IonLabel,
   IonItemSliding,
   IonItemOptions,
   IonItemOption,
   IonButton,
+  IonCard,
+  IonInput,
+  /*
   IonPage,
   IonHeader,
   IonCard,
+  /*
   IonToolbar,
   IonTitle,
+  */
   IonCardTitle,
   IonCardSubtitle,
-  IonCardContent,
+  //IonCardContent,
+  /*
   IonContent,
+  */
   IonCardHeader
-
+  
 } from '@ionic/react';
-import { Card, Button } from 'react-bootstrap';
+//import { Card, Button } from 'react-bootstrap';
 
-import { useHistory } from 'react-router';
+//import { useHistory } from 'react-router';
 import { Dispatch } from 'redux';
-import { Bag, Folder, HistoryState } from '../store';
+import { Bag, Folder, HistoryState, getPublicKey } from '../store';
 import './MarketItem.scoped.css';
-
-import { document as documentIcon, trash, create, checkmarkCircle } from 'ionicons/icons';
+import { /*document as documentIcon,*/ trash, create, checkmarkCircle } from 'ionicons/icons';
 import { bagIdFromAddress } from '../utils/bagIdFromAddress';
+import { useTour } from '@reactour/tour';
+//import { State } from '@ionic-selectable/core/dist/types/stencil-public-runtime';
 
 interface MarketItemProps {
-  
+  publicKey: string;
   bag: Bag;
   registryUri: string;
   id: string;
@@ -39,18 +49,23 @@ interface MarketItemProps {
   completed: boolean;
   onlyCompleted: boolean;
   folder: Folder;
-  purchase: (registryUri: string, bagId: string, price: number) => void;
+  purchase: (registryUri: string, bagId: string, price: number, step: string) => void;
+  sell: (registryUri: string, bagId: string, price: number) => void;
+  user: string;
 }
 
 const MarketItemComponent: React.FC<MarketItemProps> = (
   props: MarketItemProps,
 ) => {
   const identity = localStorage.getItem('wallet');
-  const history = useHistory();
+  const { /*isOpen,*/ currentStep, /* steps,*/ setIsOpen, setCurrentStep /*, setSteps*/ } = useTour()
+  //const history = useHistory();
+  const priceInput = React.useRef<HTMLIonInputElement | null>(null);
+  const [price, setPrice] = useState<number>();
 
   console.log(props.folder);
   return (
-    <IonItemSliding className="container">
+    <IonItemSliding className="container" disabled>
       <IonItemOptions side="end">
         <IonItemOption
           color="secondary"
@@ -66,7 +81,7 @@ const MarketItemComponent: React.FC<MarketItemProps> = (
         </IonItemOption>
       </IonItemOptions>
       {
-        <IonCard color="grey"
+        <IonCard class="MarketItemCard MarketCard"
           className={`${
             !props.onlyCompleted &&
             Object.keys(props.folder.signatures).length > 1
@@ -74,7 +89,32 @@ const MarketItemComponent: React.FC<MarketItemProps> = (
               : ''
           } ${props.completed ? 'success' : 'secondary'}`}
         >
+          <IonCardHeader>
+            <IonCardSubtitle>
+                <IonLabel className="ion-text-wrap">
+                  <h2>{bagIdFromAddress(props.id)}</h2>
+                </IonLabel>
+            </IonCardSubtitle>
+            <IonCardTitle>
+                {!props.awaitsSignature && (
+                  <IonGrid>
+                    <IonRow>
+                      <IonLabel>
+                        <h2>Owner: {props.bag.boxId}</h2>
+                      </IonLabel>
+                    </IonRow>
+                    <IonRow>
+                    <IonIcon  icon={checkmarkCircle} color="success" />
+                    <IonLabel className="ion-text-wrap">
+                      <h2>Attested</h2>
+                    </IonLabel>
+                    </IonRow>
+                  </IonGrid>
+                )}
+            </IonCardTitle>
+          </IonCardHeader>
           <div className="mainContainer">
+          { /*<div className="mainContainer"> */ }
             <div className="IconContainer">
               {Object.keys(props.folder.files).map(filename => {
                 const file = props.folder.files[filename];
@@ -102,15 +142,18 @@ const MarketItemComponent: React.FC<MarketItemProps> = (
               })}
             </div>
             <div className="labelContainer">
-              {identity ? (
+              {identity && props.bag.boxId === props.user ? (
                 undefined
               ) : (
                 <IonButton
+                  className="PurchaseButton"
                   onClick={() => {
+                    setIsOpen(false);
                     props.purchase(
                       props.registryUri,
                       bagIdFromAddress(props.id),
-                      props.bag.price || 0
+                      props.bag.price || 0,
+                      props.user === "buyer" ? "4" : "6"
                     );
                   }}
                 >
@@ -118,16 +161,52 @@ const MarketItemComponent: React.FC<MarketItemProps> = (
                 </IonButton>
               )}
 
-                {!props.awaitsSignature && (
-                  <IonIcon icon={checkmarkCircle} color="success" />
-                )}
+              {identity && props.bag.boxId !== props.user ? (
+                  undefined
+              ) : (
+                <div>
+                  <IonLabel position="floating" color="primary">
+                    Enter price
+                  </IonLabel>
+                  <IonInput
+                    ref={priceInput} 
+                    
+                    color="primary"
+                    placeholder="enter price(in rev) of nft"
+                    type="number"
+                    value={price || 30}
+                    onKeyPress={e => {
+                      if (e.key === 'Enter' && price && price > 0) {
+                        setCurrentStep(currentStep + 1);
+                      }
+                    }}
+                    onIonChange={e => {
+                      console.info(parseInt((e.target as HTMLInputElement).value))
+                      const inPrice = parseInt((e.target as HTMLInputElement).value);
+                        setPrice(inPrice)
+                      }
+                    }
+                  />
+                  <IonButton
+                  
+                  className="SellButton"
+                  onClick={() => {
+                    setIsOpen(false);
+                    props.sell(
+                      props.registryUri,
+                      bagIdFromAddress(props.id),
+                      price || 3000000000
+                    );
+                  }}
+                >
+                  Sell for {(price || 3000000000) * (1 / 100000000)} REV
+                </IonButton>
+                </div>
+              )}
 
-                <IonLabel className="ion-text-wrap">
-                  <h2>{bagIdFromAddress(props.id)}</h2>
-                </IonLabel>
             </div>
           </div>
-        </IonCard>
+          </IonCard>
       }
     </IonItemSliding>
    
@@ -137,16 +216,30 @@ const MarketItemComponent: React.FC<MarketItemProps> = (
 const MarketItem = connect(
   (state: HistoryState) => {
     return {
-      bags: state.reducer.bags,
-      bagsData: state.reducer.bagsData,
-      state: state,
+      //bags: state.reducer.bags,
+      //bagsData: state.reducer.bagsData,
+      //state: state,
+      user: state.reducer.user,
+      publicKey: getPublicKey(state) as string,
     };
   },
   (dispatch: Dispatch) => {
     return {
-      purchase: (registryUri: string, bagId: string, price: number) => {
+      purchase: (registryUri: string, bagId: string, price: number, step: string) => {
         dispatch({
           type: 'PURCHASE_BAG',
+          payload: {
+            bagId: bagId,
+            registryUri: registryUri,
+            price: price,
+            step: step,
+          },
+        });
+      },
+
+      sell: (registryUri: string, bagId: string, price: number) => {
+        dispatch({
+          type: 'SELL_BAG',
           payload: {
             bagId: bagId,
             registryUri: registryUri,
