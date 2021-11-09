@@ -4,6 +4,7 @@ import * as rchainToolkit from 'rchain-toolkit';
 import React, { useEffect /*, useState, Suspense, useEffect */ } from 'react';
 //import { useHistory } from 'react-router';
 //import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import {
   IonContent,
@@ -97,7 +98,7 @@ const LoginViewComponent: React.FC<LoginViewProps> = props => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handlePublisherLogin = async() => {
+  const handlePublisherLogin = () => {
     //localStorage.removeItem('user');
     localStorage.setItem('user', 'publisher');
     localStorage.setItem('publisher', 'true');

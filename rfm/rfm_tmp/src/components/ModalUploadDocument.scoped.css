@@ -53,7 +53,7 @@ ion-button.AddButton {
   border-radius: 5px;
   border-color: var(--ion-color-primary);
   --box-shadow: none;
-  color: var(--ion-color-light);
+  color: var(--ion-background-color);
   margin: auto;
   margin-right: 5px;
   background: var(--ion-color-primary);

@@ -205,7 +205,7 @@ const AppComponent: React.FC<AppProps> = props => {
       
       <IonHeader no-border no-shadow className="ion-no-border">
         <IonToolbar className="noSafeAreaPaddingTop">
-          <IonTitle
+          <IonTitle className="title"
             onClick={() => {
            reload()
           }}
