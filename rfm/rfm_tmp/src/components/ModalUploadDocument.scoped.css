@@ -1,19 +1,44 @@
 .modal-document {
-  width: 100vw;
+  width: 100%;
+  margin-left: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
+  position: absolute;
+  font-family: 'Poppins', sans-serif;
 }
+
+@media screen and (min-width: 768px) {
+  .modal-document {
+    left: 300px;
+  }
+}
+
+h3 {
+  color: #3A3A3A;
+}
+
+.inner {
+  margin-left: 50px;
+}
+
 .upload-to-the-blockchain {
   margin-top: 10px;
   margin-bottom: 10px;
-  color: var(--ion-color-primary);
+  font-size: 1.5rem;
+  color: var(--ion-text-color);
+  font-family: 'Poppins', sans-serif;
+}
+
+.close {
+  font-size: 1.4rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .label {
-  color: var(--ion-color-primary);
+  color: var(--ion-text-color);
+  font-family: 'Poppins', sans-serif;
 }
 
 .ButtonArray {
@@ -34,34 +59,51 @@ ion-button.AddButton {
   background: var(--ion-color-primary);
 }
 
+.custom-radio {
+  color: var(--ion-text-color);
+  font-family: 'Poppins', sans-serif;
+}
+
 .inner {
   width: 100vw;
   max-width: 800px;
 }
 
+.description {
+  color: var(--ion-text-color);
+}
+
 .drop-area {
   margin-top: 5px;
-  width: 100%;
+  width: 40%;
   height: 10em;
-  border: 1px solid #ccc;
+  border: 1px dashed #ccc;
+  margin-left: 20px;
   border-radius: 5px;
   color: #aaa;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  margin: 20px 0px 20px 20px;
-  max-width: 400px;
+  
+ 
 }
 .drop-area.hide {
-  display: none;
+  /*display: none;*/
 }
+
 .drop-area span {
   z-index: 1;
   justify-content: center;
   align-items: center;
   position: relative;
 }
+
+.img-upload {
+  display: flex;
+  flex-direction: column;
+}
+
 .drop-area textarea {
   z-index: 2;
   position: absolute;
@@ -70,7 +112,7 @@ ion-button.AddButton {
   width: 100%;
   height: 100%;
   opacity: 0;
-  cursor: default;
+  cursor: pointer;
 }
 
 .document {

@@ -72,7 +72,7 @@ body {
 }
 
 .IdentityBG {
-  --background: var(--ion-color-light);
+  --background: black;
 }
 
 .ProfileButton {
@@ -117,7 +117,7 @@ ion-slides.IdentityList {
   bottom: 50%;
   border-top: 0.7em solid transparent;
   border-bottom: 0.7em solid transparent;
-  border-left: 1em solid var(--ion-color-light);
+  border-left: 1em solid #121212;
 }
 
 .ArrowLeft {
@@ -127,7 +127,7 @@ ion-slides.IdentityList {
   bottom: 50%;
   border-top: 0.7em solid transparent;
   border-bottom: 0.7em solid transparent;
-  border-right: 1em solid var(--ion-color-light);
+  border-right: 1em solid #121212;
 }
 
 .ps5 {
@@ -164,9 +164,59 @@ ion-button.with-border {
 }
 
 .react-pdf__Page__textContent {
-  border-bottom: 0.1em solid black;
+  border-bottom: 0.1em solid #121212;
 }
 
 .UserInfo {
   display: contents;
+}
+
+.alert-wrapper {
+  --background: white;
+}
+
+.alert-title {
+  color: #121212 !important;
+}
+
+.alert-radio-label {
+  color: rgb(27, 27, 27) !important;
+}
+
+.BottomRightSignature {
+  z-index: 111;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 5em;
+  margin-right: 2em;
+}
+
+.main-title {
+  color: #fff;
+  font-weight: lighter;
+}
+
+ionic-selectable {
+  color: black;
+}
+
+ionic-selectable-modal {
+  color: black;
+  --color: black;
+}
+
+
+ionic-selectable-modal ion-label.sc-ionic-selectable-modal-md {
+  color: black !important;
+}
+
+ionic-selectable-modal ion-icon.sc-ionic-selectable-modal-md {
+  color: black !important;
+  --color: black !important;
+}
+
+div.reactour__popover {
+  color: black;
+  border-radius: 1em;
 }

@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 ion-slides {
@@ -8,25 +8,21 @@ ion-slides {
 }
 
 .login {
-  background-color: #CCCCC4;
+  /*background-color: #CCCCC4;*/
   padding: 20px 20px 20px 20px;
   border-radius: 5px;
 }
 
-.btn {
-  border: solid 1px var(--ion-color-secondary);
-  border-radius: 1em;
-  --box-shadow: none;
-}
 
 @media (prefers-color-scheme: dark) {
-  ion-button.ActionButton {
+  ion-button.btn {
+    --background: black;
     color: white;
   }
 }
 
 @media (prefers-color-scheme: light) {
-  ion-button.ActionButton {
+  ion-button.btn {
     color: black;
   }
 }
@@ -47,10 +43,24 @@ div.BottomBar {
 }
 
 .LoadButtonDiv {
-  text-align: left;
+  /*text-align: left;*/
   padding: 10px 10px 10px 10px;
 }
 
 .LoadButtonDiv ion-button {
   font-family: 'Poppins', sans-serif;
+  width: 100%;
 }
+
+.btn:hover {
+  color: #fff;
+  --background: #494949;
+}
+
+.btn:active {
+  color: #121212;
+  --background: #fff;
+}
+
+
+

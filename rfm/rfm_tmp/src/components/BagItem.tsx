@@ -11,7 +11,7 @@ import {
 } from '@ionic/react';
 
 import { useHistory } from 'react-router';
-import { Bag, Document } from '../store';
+import { Bag, Folder } from '../store';
 import './BagItem.scoped.css';
 
 import { document as documentIcon, trash, create } from 'ionicons/icons';
@@ -24,7 +24,8 @@ interface BagItemProps {
   awaitsSignature: boolean;
   completed: boolean;
   onlyCompleted: boolean;
-  document: Document;
+  folder: Folder;
+  pos: string;
 }
 
 const BagItemComponent: React.FC<BagItemProps> = ({
@@ -32,11 +33,15 @@ const BagItemComponent: React.FC<BagItemProps> = ({
   id,
   awaitsSignature,
   completed,
-  document
+  folder,
+  bag,
+  pos
 }) => {
   const history = useHistory();
+  const publisher = localStorage.getItem('publisher');
+  console.log(awaitsSignature);
   return (
-    <IonItemSliding className="container">
+    <IonItemSliding className="container" disabled>
       <IonItemOptions side="end">
         <IonItemOption
           color="secondary"
@@ -52,7 +57,8 @@ const BagItemComponent: React.FC<BagItemProps> = ({
         </IonItemOption>
       </IonItemOptions>
       <IonItem
-        className={`${(!onlyCompleted && Object.keys(document.signatures).length > 1) ? 'with-parent' : ''} ${completed ? 'success' : 'secondary'}`}
+        // eslint-disable-next-line no-useless-concat
+        className={`${(!onlyCompleted && Object.keys(folder.signatures).length > 1) ? 'with-parent' : ''} ${completed ? 'attested' + ' pos_' + pos : 'not_attested' + ' pos_' + pos}`}
         detail={false}
         button
         onClick={() => {
@@ -60,15 +66,23 @@ const BagItemComponent: React.FC<BagItemProps> = ({
         }}
       >
         <div className="IconContainer">
-          <IonIcon icon={documentIcon} color={completed ? 'success' : 'primary'} size="large" />
+          <IonIcon
+            icon={documentIcon}
+            color={completed ? 'success' : 'primary'}
+            size="large"
+          />
         </div>
         <IonLabel className="ion-text-wrap">
           <h2>{bagIdFromAddress(id)}</h2>
         </IonLabel>
-        {awaitsSignature && (
-          <IonButton className="AddButton">
-            Needs attestation
-          </IonButton>
+        {!publisher ? (
+          !awaitsSignature ? (
+            <IonButton className="AddButton">Needs attestation</IonButton>
+          ) : (
+            <IonButton className="AddButton">already attested</IonButton>
+          )
+        ) : (
+          undefined
         )}
       </IonItem>
     </IonItemSliding>
