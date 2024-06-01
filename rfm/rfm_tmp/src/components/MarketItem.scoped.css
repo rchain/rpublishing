@@ -1,6 +1,6 @@
 ion-item-sliding.container {
   overflow: visible;
-  background: var(--ion-color-primary);
+  /* background: var(--ion-color-dark-tint); */
 }
 ion-item {
   --padding-start: 0;
@@ -26,10 +26,30 @@ ion-icon {
   z-index: 3;
 }
 
-ion-label {
+.container {
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid #CBC9C9; */
+  /* border-radius: 10px; */
+}
+
+.MarketItemCard {
+  max-width: 26em;
+  background: #f7f7f7;
+}
+
+.labelContainer {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 50px 5px 5px;
+}
+
+/* ion-label {
   margin-top: 12px;
   margin-bottom: 12px;
-}
+} */
+
 
 ion-item h2 {
   font-weight: 600;
@@ -65,6 +85,23 @@ ion-item ion-note.md {
 
 .IconContainer {
   margin: 1em;
+  display: flex;
+}
+
+.ImageFrame {
+  padding: 0.6em;
+  min-width: 8em;
+  max-width: 16em;
+}
+
+.ImageFrame.main {
+  padding: 0.6em;
+  min-width: 12em;
+  max-width: 22em;
+}
+
+.Image {
+  padding: 0.4em;
 }
 
 .ion-text-wrap {
@@ -76,9 +113,9 @@ ion-footer ion-title {
   font-weight: normal;
 }
 
-ion-button.AddButton {
+ion-button {
   border-radius: 5px;
-  border-color: var(--ion-color-primary);
+  border-color: var(--ion-color-dark-tint);
   --box-shadow: none;
   color: var(--ion-background-color);
   margin: auto;
@@ -87,8 +124,10 @@ ion-button.AddButton {
 }
 
 .signature-ok {
-  background: #4b5;
-  margin-right: 10px;
-  padding: 10px 10px 10px 10px;
-  border-radius: 5px;
+  color: #4b5;
+  margin-left: 5px;
+}
+
+.secondary {
+  display: none;
 }

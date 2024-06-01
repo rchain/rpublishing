@@ -1,11 +1,11 @@
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router';
 
 import {
   IonContent,
-  IonProgressBar,
+  //IonProgressBar,
   IonFab,
   IonFabButton,
   IonIcon,
@@ -22,14 +22,13 @@ import {
   State,
   HistoryState,
 } from '../store';
-import Horizontal from '../components/Horizontal';
 import MarketItem from '../components/MarketItem';
 import DummyBagItem from '../components/dummy/DummyBagItem';
 import ModalDocument from '../components/ModalDocument';
-import ModalUploadDocument from '../components/ModalUploadDocument';
 
 import { parse } from 'did-resolver';
 import './PublicStore.scoped.css';
+import { useTour } from '@reactour/tour';
 
 interface PublicDocumentView {
   connected: string;
@@ -44,12 +43,62 @@ interface PublicDocumentView {
   documentsCompleted: State['bagsData'];
   searchText: string;
   platform: string;
+  user: string;
 }
 
-const PublicStoreComponent: React.FC<PublicDocumentView> = props => {
-  console.log(props);
+const purchaseSteps = [
+  { selector: '.MarketCard', content: 'The NFT is now for sale.' },
+  { selector: '.PurchaseButton', content: 'Press this button to purchase this NFT.' },
+]
 
+const purchasedSteps = [
+  { selector: '.MarketCard', content: 'Congratulations! You now own this NFT!' },
+  { selector: '.SellButton', content: 'You can put this item back to the store and resell it for a higher price.' },
+]
+
+const purchased2Steps = [
+  { selector: '.MarketCard', content: 'Congratulations! You now own this NFT!' },
+]
+
+const PublicStoreComponent: React.FC<PublicDocumentView> = props => {
+  const identity = localStorage.getItem('wallet');
   const history = useHistory();
+
+  const { /* isOpen, currentStep, steps,*/ setIsOpen, setCurrentStep, setSteps } = useTour()
+  useEffect(() => {
+    if (props.user === "buyer") {
+      if (localStorage.getItem('tour')) {
+        const menuTourStep = parseInt(localStorage.getItem('tour') || '0');
+        if (menuTourStep < 4) {
+          setSteps(purchaseSteps);
+        }
+        else {
+          setSteps(purchasedSteps);
+        }
+      }
+    }
+
+    if (props.user === "buyer2") {
+      if (localStorage.getItem('tour')) {
+        const menuTourStep = parseInt(localStorage.getItem('tour') || '0');
+        if (menuTourStep < 6) {
+          setSteps(purchaseSteps);
+        }
+        else {
+          setSteps(purchased2Steps);
+        }
+      }
+    }
+    setTimeout(() => {
+      setIsOpen(false);
+      setCurrentStep(0);
+      setIsOpen(true);
+      setTimeout(() => {
+        setCurrentStep(1);
+      }, 5000)
+    }, 100)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scanQRCode = () => {
     (window as any).cordova.plugins.barcodeScanner.scan(
@@ -98,9 +147,17 @@ const PublicStoreComponent: React.FC<PublicDocumentView> = props => {
 
   return (
     <div className="public-store">
-      <h2>NFT Marketplace</h2>
-      <IonContent>
-        {props.platform !== 'web' ? (
+      {identity ? (
+        <div className="title">
+          <h2>My NFTs</h2>
+        </div>
+      ) : (
+        <div className="title">
+          <h2>NFT Marketplace</h2>
+        </div>
+      )}
+      <IonContent className="container">
+        {props.platform !== 'web' && false ? (
           <IonFab vertical="bottom" horizontal="end" slot="fixed">
             <IonFabButton color="tertiary" onClick={scanQRCode}>
               <IonIcon icon={qrCode} />
@@ -118,19 +175,21 @@ const PublicStoreComponent: React.FC<PublicDocumentView> = props => {
           <>
             {!props.isLoading
               ? props.documentsAddressesInOrder.map(address => {
-                  return (
+                return (
+                    <div className="container">
                     <MarketItem
                       key={address}
                       registryUri={props.registryUri}
                       id={address}
                       bag={props.bags[address]}
-                      document={props.bagsData[address]}
+                      folder={props.bagsData[address]}
                       onlyCompleted={false}
                       awaitsSignature={
                         !!props.documentsAwaitingSignature[address]
                       }
                       completed={!!props.documentsCompleted[address]}
                     />
+                    </div>
                   );
                 })
               : [...Array(10)].map((x, i) => (
@@ -157,6 +216,7 @@ export const PublicStore = connect(
       isLoading: state.reducer.isLoading,
       searchText: state.reducer.searchText,
       platform: state.reducer.platform,
+      user: state.reducer.user,
     };
   },
   (dispatch: Dispatch) => {

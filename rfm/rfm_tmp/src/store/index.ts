@@ -13,9 +13,8 @@ import { RouterState } from 'connected-react-router';
 
 import {
   FingerprintAIO,
-  FingerprintOptions
+  //FingerprintOptions
 } from "@ionic-native/fingerprint-aio/";
-import { rejects } from 'assert';
 
 import { DID, JWSSignature } from 'dids';
 
@@ -27,7 +26,6 @@ export interface State {
   validatorUrl: string;
 
   // rchain-token contract
-  nonce: undefined | string;
   contractPublicKey: undefined | string;
   identities: { [pubKey: string]: string }; //Map of identities <pubkey, regUri>
   registryUri: undefined | string;
@@ -36,7 +34,7 @@ export interface State {
 
   // rchain-token bags and data
   bags: { [address: string]: Bag };
-  bagsData: { [address: string]: Document };
+  bagsData: { [address: string]: Folder };
 
   isLoading: boolean;
   searchText: string;
@@ -53,29 +51,37 @@ export type HistoryState = CombinedState<{
 
 export interface Bag {
   n: string;
+  id: string;
   quantity: number;
   price: undefined | number;
   publicKey: string;
+  timestamp: number;
+  boxId: string;
 }
 export interface Signature extends JWSSignature {
   payload: string;
   publicKey: string;
 }
+
+export interface Folder {
+  files: { [s: string]: Document },
+  signatures: { [s: string]: Signature };
+  scheme?: { [s: string]: string },
+  date: string;
+  mainFile: string;
+}
+
 export interface Document {
   name: string;
   mimeType: string;
   data: string;
-  signatures: { [s: string]: Signature };
-  date: string;
-  scheme?: { [s: string]: string }
   //parent?: string;
 }
 
 const initialState: State = {
   did: undefined,
-  readOnlyUrl: 'http://localhost:40403',
-  validatorUrl: 'http://localhost:40403',
-  nonce: undefined,
+  readOnlyUrl: 'https://gracious-pare-6c4c99.netlify.app',
+  validatorUrl: 'https://gracious-pare-6c4c99.netlify.app',
   contractPublicKey: undefined,
   identities: {},
   registryUri: undefined,
@@ -86,7 +92,7 @@ const initialState: State = {
   searchText: '',
   platform: '',
   authorised: false,
-  user: ''
+  user: '',
 };
 
 const reducer = (
@@ -122,7 +128,6 @@ const reducer = (
     case "INIT_COMPLETED": {
       return {
         ...state,
-        nonce: action.payload.nonce,
         contractPublicKey: action.payload.contractPublicKey,
       };
     }
@@ -261,16 +266,15 @@ export const getDocumentsCompleted = createSelector(
   (state: HistoryState) => state,
   (state: HistoryState) => {
     const bagsData = state.reducer.bagsData;
-    const documentsComplete: { [bagId: string]: Document } = {};
+    const documentsComplete: { [bagId: string]: Folder } = {};
     Object.keys(bagsData).forEach(bagId => {
-      const document = bagsData[bagId];
+      const folder = bagsData[bagId];
       if (
-        document &&
-        document.signatures['0'] &&
-        document.signatures['1'] &&
-        document.signatures['2']
+        folder && folder.signatures && 
+        folder.signatures['0'] &&
+        folder.signatures['1']
       ) {
-        documentsComplete[bagId] = document;
+        documentsComplete[bagId] = folder;
         return;
       }
     });
@@ -298,28 +302,19 @@ export const getDocumentsAwaitingSignature = createSelector(
   getBagsData,
   getPublicKey,
   (bagsData: HistoryState['reducer']['bagsData'], publicKey: HistoryState['reducer']['publicKey']) => {
-    const documentsAwaitingSignature: { [bagId: string]: Document } = {};
+    const documentsAwaitingSignature: { [bagId: string]: Folder } = {};
     Object.keys(bagsData).forEach(bagId => {
-      const document = bagsData[bagId];
+      const folder = bagsData[bagId];
+
       if (
-        document.signatures['0'] &&
-        !document.signatures['1'] &&
-        document.signatures['0'].publicKey !== publicKey
+        folder && folder.signatures &&
+        folder.signatures['0'] &&
+        !folder.signatures['1'] &&
+        folder.signatures['0'].publicKey !== publicKey
       ) {
-        documentsAwaitingSignature[bagId] = document;
+        documentsAwaitingSignature[bagId] = folder;
         return;
       }
-      /*
-      if (
-        document.signatures['0'] &&
-        document.signatures['1'] &&
-        !document.signatures['2'] &&
-        document.signatures['1'].publicKey !== publicKey
-      ) {
-        documentsAwaitingSignature[bagId] = document;
-        return;
-      }
-      */
     });
 
     return documentsAwaitingSignature;
